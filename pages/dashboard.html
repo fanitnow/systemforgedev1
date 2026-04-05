@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SystemForge AI — Owner Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0A0A0A;--dark:#111;--card:#161616;--card2:#1a1a1a;
+  --border:#222;--border2:#2a2a2a;
+  --gold:#C9A84C;--gold-light:#E8C96A;--gold-dim:rgba(201,168,76,0.1);
+  --white:#F5F0E8;--muted:#666;--muted2:#888;
+  --green:#4CAF78;--red:#FF4444;--blue:#5B8DEF;--orange:#F0A500;
+}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;display:flex;min-height:100vh}
+h1,h2,h3,h4{font-family:'Syne',sans-serif}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;bottom:0;left:0;z-index:50}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid var(--border);font-family:'Syne',sans-serif;font-weight:800;font-size:1rem}
+.sidebar-logo span{color:var(--gold)}
+.sidebar-nav{padding:16px 0;flex:1}
+.nav-section-label{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);padding:8px 20px 4px;margin-top:8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:0.83rem;color:var(--muted2);cursor:pointer;transition:all 0.15s;text-decoration:none;border-left:2px solid transparent}
+.nav-item:hover{color:var(--white);background:rgba(255,255,255,0.03)}
+.nav-item.active{color:var(--gold);background:var(--gold-dim);border-left-color:var(--gold)}
+.nav-icon{width:16px;text-align:center;font-size:0.85rem;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--gold);color:var(--black);font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:0}
+.sidebar-bottom{padding:16px 20px;border-top:1px solid var(--border)}
+.sidebar-user{display:flex;align-items:center;gap:10px}
+.user-avatar{width:32px;height:32px;background:var(--gold);color:var(--black);font-family:'Syne',sans-serif;font-weight:800;font-size:0.7rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.user-name{font-size:0.78rem;font-weight:500}
+.user-role{font-size:0.68rem;color:var(--muted)}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{padding:16px 32px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--dark);position:sticky;top:0;z-index:40}
+.topbar-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-date{font-size:0.78rem;color:var(--muted)}
+.topbar-btn{background:var(--gold);color:var(--black);border:none;padding:8px 18px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;cursor:pointer;letter-spacing:0.04em;transition:background 0.2s}
+.topbar-btn:hover{background:var(--gold-light)}
+.content{padding:32px;flex:1}
+
+/* METRIC CARDS */
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.metric-card{background:var(--card);border:1px solid var(--border);padding:24px 20px;position:relative;overflow:hidden}
+.metric-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform 0.3s}
+.metric-card:hover::after{transform:scaleX(1)}
+.metric-label{font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.metric-value{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;line-height:1;margin-bottom:6px}
+.metric-value.gold{color:var(--gold)}
+.metric-value.green{color:var(--green)}
+.metric-value.white{color:var(--white)}
+.metric-change{font-size:0.75rem;color:var(--muted2);display:flex;align-items:center;gap:4px}
+.change-up{color:var(--green)}
+.change-down{color:var(--red)}
+
+/* GRID LAYOUT */
+.dashboard-grid{display:grid;grid-template-columns:1fr 380px;gap:16px}
+.full-width{grid-column:1/-1}
+
+/* PANELS */
+.panel{background:var(--card);border:1px solid var(--border)}
+.panel-header{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem}
+.panel-action{font-size:0.75rem;color:var(--gold);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;transition:opacity 0.2s}
+.panel-action:hover{opacity:0.7}
+
+/* PIPELINE */
+.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
+.pipeline-col{background:var(--card);padding:0}
+.pipeline-col-header{padding:12px 16px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.col-name{font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.col-count{background:var(--border2);color:var(--muted2);font-size:0.65rem;font-weight:700;padding:2px 8px}
+.pipeline-cards{padding:12px;display:flex;flex-direction:column;gap:8px;min-height:200px}
+.lead-card{background:var(--card2);border:1px solid var(--border2);padding:14px;cursor:pointer;transition:border-color 0.2s;animation:fadeUp 0.3s ease both}
+.lead-card:hover{border-color:rgba(201,168,76,0.4)}
+.lead-name{font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;margin-bottom:4px}
+.lead-biz{font-size:0.72rem;color:var(--muted2);margin-bottom:8px}
+.lead-meta{display:flex;align-items:center;justify-content:space-between}
+.lead-tier{font-size:0.65rem;font-weight:700;padding:2px 8px;letter-spacing:0.05em}
+.tier-badge-1{background:rgba(91,141,239,0.15);color:#5B8DEF;border:1px solid rgba(91,141,239,0.3)}
+.tier-badge-2{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(201,168,76,0.3)}
+.tier-badge-3{background:rgba(76,175,120,0.1);color:var(--green);border:1px solid rgba(76,175,120,0.3)}
+.lead-time{font-size:0.68rem;color:var(--muted)}
+.lead-score{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.score-hot{background:var(--red)}
+.score-warm{background:var(--orange)}
+.score-cool{background:var(--blue)}
+
+/* ACTIVITY FEED */
+.activity-list{padding:0}
+.activity-item{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;transition:background 0.15s}
+.activity-item:hover{background:rgba(255,255,255,0.02)}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{width:28px;height:28px;border-radius:0;display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;margin-top:2px}
+.icon-payment{background:rgba(76,175,120,0.15);color:var(--green)}
+.icon-audit{background:var(--gold-dim);color:var(--gold)}
+.icon-lead{background:rgba(91,141,239,0.15);color:var(--blue)}
+.icon-complete{background:rgba(76,175,120,0.15);color:var(--green)}
+.activity-content{flex:1}
+.activity-text{font-size:0.82rem;color:#ccc;line-height:1.4}
+.activity-text strong{color:var(--white)}
+.activity-time{font-size:0.7rem;color:var(--muted);margin-top:3px}
+.activity-amount{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:var(--green);flex-shrink:0}
+
+/* REVENUE CHART */
+.chart-area{padding:24px;height:180px;position:relative;display:flex;align-items:flex-end;gap:8px}
+.bar-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.bar-wrap{flex:1;display:flex;align-items:flex-end;width:100%}
+.bar{width:100%;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);transition:height 0.5s ease;position:relative;cursor:pointer}
+.bar:hover{background:rgba(201,168,76,0.25)}
+.bar.current{background:rgba(201,168,76,0.3);border-color:var(--gold)}
+.bar-label{font-size:0.65rem;color:var(--muted);text-align:center}
+.bar-tooltip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--dark);border:1px solid var(--border);padding:4px 10px;font-size:0.7rem;color:var(--white);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.2s;font-family:'Syne',sans-serif;font-weight:700}
+.bar:hover .bar-tooltip{opacity:1}
+.chart-y-labels{position:absolute;left:0;top:24px;bottom:40px;display:flex;flex-direction:column;justify-content:space-between;padding:0 4px}
+.y-label{font-size:0.62rem;color:var(--muted)}
+
+/* CLIENTS TABLE */
+.clients-table{width:100%;border-collapse:collapse}
+.clients-table th{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:10px 16px;text-align:left;border-bottom:1px solid var(--border);font-weight:600;background:var(--card2)}
+.clients-table td{padding:12px 16px;font-size:0.82rem;border-bottom:1px solid var(--border);vertical-align:middle}
+.clients-table tr:last-child td{border-bottom:none}
+.clients-table tr:hover td{background:rgba(255,255,255,0.02)}
+.status-badge{font-size:0.65rem;font-weight:700;padding:3px 10px;letter-spacing:0.05em}
+.status-active{background:rgba(76,175,120,0.1);color:var(--green);border:1px solid rgba(76,175,120,0.25)}
+.status-building{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(201,168,76,0.25)}
+.status-review{background:rgba(91,141,239,0.1);color:var(--blue);border:1px solid rgba(91,141,239,0.25)}
+.status-new{background:rgba(240,165,0,0.1);color:var(--orange);border:1px solid rgba(240,165,0,0.25)}
+.progress-bar{height:4px;background:var(--border);margin-top:4px;width:80px}
+.progress-fill{height:100%;background:var(--gold);transition:width 0.5s}
+
+/* QUICK ACTIONS */
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px}
+.qa-btn{background:var(--card2);border:1px solid var(--border);padding:14px 16px;cursor:pointer;transition:all 0.2s;text-align:left}
+.qa-btn:hover{border-color:rgba(201,168,76,0.4);background:var(--gold-dim)}
+.qa-icon{font-size:1rem;margin-bottom:6px}
+.qa-label{font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;color:var(--white)}
+.qa-desc{font-size:0.68rem;color:var(--muted);margin-top:2px}
+
+/* AUDIT SCORE */
+.score-ring{padding:24px;display:flex;flex-direction:column;align-items:center}
+.ring-wrap{position:relative;width:120px;height:120px;margin-bottom:16px}
+.ring-svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:8}
+.ring-fill{fill:none;stroke:var(--gold);stroke-width:8;stroke-linecap:square;stroke-dasharray:283;stroke-dashoffset:56;transition:stroke-dashoffset 1s ease}
+.ring-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-num span{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--gold)}
+.ring-num small{font-size:0.65rem;color:var(--muted)}
+.score-label{font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;margin-bottom:4px}
+.score-desc{font-size:0.72rem;color:var(--muted);text-align:center;max-width:160px;line-height:1.4}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:1200px){
+  .metrics-grid{grid-template-columns:repeat(2,1fr)}
+  .dashboard-grid{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .sidebar{display:none}
+  .main{margin-left:0}
+  .content{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo" style="display:flex;align-items:center;gap:9px"><svg width="26" height="26" viewBox="0 0 44 44" fill="none" style="flex-shrink:0"><rect x="2" y="2" width="40" height="40" stroke="#C9A84C" stroke-width="1.5"/><path d="M10 32 L10 18 L22 12 L34 18 L34 32" stroke="#C9A84C" stroke-width="2" fill="none"/><path d="M10 32 L34 32" stroke="#C9A84C" stroke-width="2"/><rect x="8" y="30" width="28" height="4" fill="#C9A84C"/></svg>System<span>Forge</span> AI</div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a class="nav-item active" onclick="showTab('dashboard')"><span class="nav-icon">⬛</span> Dashboard</a>
+    <a class="nav-item" onclick="showTab('leads')"><span class="nav-icon">◈</span> Lead Pipeline <span class="nav-badge">7</span></a>
+    <a class="nav-item" onclick="showTab('clients')"><span class="nav-icon">◉</span> Clients</a>
+    <a class="nav-item" onclick="showTab('audits')"><span class="nav-icon">◎</span> Audits</a>
+    <div class="nav-section-label">Finance</div>
+    <a class="nav-item" onclick="showTab('revenue')"><span class="nav-icon">$</span> Revenue</a>
+    <a class="nav-item" onclick="showTab('invoices')"><span class="nav-icon">≡</span> Invoices</a>
+    <div class="nav-section-label">Settings</div>
+    <a class="nav-item" onclick="showTab('settings')"><span class="nav-icon">⚙</span> Settings</a>
+    <a class="nav-item" href="/"><span class="nav-icon">↗</span> View Site</a>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="sidebar-user">
+      <div class="user-avatar">SF</div>
+      <div>
+        <div class="user-name">SystemForge Owner</div>
+        <div class="user-role">Admin</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">Dashboard Overview</div>
+    <div class="topbar-right">
+      <div class="topbar-date" id="currentDate"></div>
+      <button class="topbar-btn" onclick="window.open('checkout.html')">+ New Client</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- METRICS -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Revenue This Month</div>
+        <div class="metric-value gold" id="revenueVal">$0</div>
+        <div class="metric-change"><span class="change-up">↑ 23%</span> vs last month</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Active Clients</div>
+        <div class="metric-value white" id="clientsVal">0</div>
+        <div class="metric-change"><span class="change-up">↑ 3</span> this week</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Audits Completed</div>
+        <div class="metric-value white" id="auditsVal">0</div>
+        <div class="metric-change"><span class="change-up">↑ 12</span> this week</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Conversion Rate</div>
+        <div class="metric-value green" id="convVal">0%</div>
+        <div class="metric-change">Audit → Paid client</div>
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="dashboard-grid">
+
+      <!-- PIPELINE -->
+      <div class="panel full-width">
+        <div class="panel-header">
+          <div class="panel-title">Lead Pipeline</div>
+          <button class="panel-action">View All →</button>
+        </div>
+        <div class="pipeline" id="pipelineBoard"></div>
+      </div>
+
+      <!-- REVENUE CHART -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Monthly Revenue</div>
+          <button class="panel-action">Export</button>
+        </div>
+        <div class="chart-area" id="revenueChart"></div>
+      </div>
+
+      <!-- ACTIVITY + SCORE -->
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">Platform Health Score</div></div>
+          <div class="score-ring">
+            <div class="ring-wrap">
+              <svg class="ring-svg" width="120" height="120" viewBox="0 0 120 120">
+                <circle class="ring-bg" cx="60" cy="60" r="45"/>
+                <circle class="ring-fill" cx="60" cy="60" r="45" id="ringFill"/>
+              </svg>
+              <div class="ring-num"><span id="scoreNum">0</span><small>/ 100</small></div>
+            </div>
+            <div class="score-label">Automation Score</div>
+            <div class="score-desc">Based on active systems, conversion rate, and response time</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">Quick Actions</div></div>
+          <div class="quick-actions">
+            <button class="qa-btn" onclick="window.open('checkout.html')">
+              <div class="qa-icon">➕</div>
+              <div class="qa-label">Add Client</div>
+              <div class="qa-desc">Manual intake</div>
+            </button>
+            <button class="qa-btn">
+              <div class="qa-icon">📊</div>
+              <div class="qa-label">Run Audit</div>
+              <div class="qa-desc">For a lead</div>
+            </button>
+            <button class="qa-btn">
+              <div class="qa-icon">📧</div>
+              <div class="qa-label">Send Report</div>
+              <div class="qa-desc">Email PDF</div>
+            </button>
+            <button class="qa-btn" onclick="window.open('playbook.html')">
+              <div class="qa-icon">🎯</div>
+              <div class="qa-label">Outreach</div>
+              <div class="qa-desc">View playbook</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY FEED -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Live Activity</div>
+          <button class="panel-action">Clear</button>
+        </div>
+        <div class="activity-list" id="activityFeed"></div>
+      </div>
+
+      <!-- CLIENTS TABLE -->
+      <div class="panel full-width">
+        <div class="panel-header">
+          <div class="panel-title">Recent Clients</div>
+          <button class="panel-action">View All →</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="clients-table" id="clientsTable">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Business</th>
+                <th>Package</th>
+                <th>Status</th>
+                <th>Progress</th>
+                <th>Revenue</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody id="clientsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── SAMPLE DATA ──
+const pipeline = {
+  'New Audit': [
+    {name:'Marcus Thompson',biz:'Iron Fitness ATL',tier:2,time:'2m ago',heat:'hot'},
+    {name:'Destiny Wright',biz:'Crown & Glory Salon',tier:1,time:'14m ago',heat:'warm'},
+    {name:'Jalen Brooks',biz:'Brooks Detailing',tier:2,time:'1h ago',heat:'warm'},
+  ],
+  'Proposal Sent': [
+    {name:'Sandra Reyes',biz:'Reyes Wellness Spa',tier:3,time:'3h ago',heat:'hot'},
+    {name:'Kevin Okafor',biz:'Pro Edge Barbershop',tier:2,time:'5h ago',heat:'warm'},
+  ],
+  'Payment Received': [
+    {name:'Tiffany Nguyen',biz:'Glow Studio Miami',tier:2,time:'Yesterday',heat:'cool'},
+    {name:'Andre Williams',biz:'Williams Roofing Co',tier:3,time:'2d ago',heat:'cool'},
+  ],
+  'Systems Live': [
+    {name:'Rosa Martinez',biz:'Martinez Cleaning',tier:2,time:'4d ago',heat:'cool'},
+    {name:'Devon Harris',biz:'Harris Consulting',tier:1,time:'1w ago',heat:'cool'},
+  ]
+};
+
+const clients = [
+  {name:'Tiffany Nguyen',biz:'Glow Studio Miami',pkg:'System Starter',status:'building',progress:65,rev:750,date:'Mar 28'},
+  {name:'Andre Williams',biz:'Williams Roofing',pkg:'Full Build',status:'building',progress:30,rev:2500,date:'Mar 26'},
+  {name:'Rosa Martinez',biz:'Martinez Cleaning',pkg:'System Starter',status:'active',progress:100,rev:750,date:'Mar 20'},
+  {name:'Devon Harris',biz:'Harris Consulting',pkg:'Audit Report',status:'active',progress:100,rev:97,date:'Mar 15'},
+  {name:'Latoya Reed',biz:'Reed Real Estate',pkg:'Full Build',status:'active',progress:100,rev:2500,date:'Feb 28'},
+];
+
+const activity = [
+  {type:'payment',icon:'💰',text:'<strong>Tiffany Nguyen</strong> paid $750 — System Starter',time:'2 min ago',amt:'$750'},
+  {type:'audit',icon:'📊',text:'New audit completed — <strong>Brooks Detailing</strong> (score: 38/100)',time:'18 min ago',amt:''},
+  {type:'lead',icon:'◈',text:'New lead: <strong>Marcus Thompson</strong> — Iron Fitness ATL',time:'32 min ago',amt:''},
+  {type:'audit',icon:'📊',text:'New audit completed — <strong>Crown & Glory Salon</strong> (score: 24/100)',time:'1 hr ago',amt:''},
+  {type:'payment',icon:'💰',text:'<strong>Andre Williams</strong> paid $2,500 — Full Build',time:'2 hrs ago',amt:'$2,500'},
+  {type:'complete',icon:'✓',text:'Systems went live for <strong>Rosa Martinez</strong>',time:'Yesterday',amt:''},
+];
+
+const chartData = [
+  {month:'Oct',val:1200},{month:'Nov',val:2400},{month:'Dec',val:1800},
+  {month:'Jan',val:3200},{month:'Feb',val:4750},{month:'Mar',val:6097,current:true}
+];
+
+// ── RENDER ──
+function renderMetrics(){
+  countUp('revenueVal','$6,097',30);
+  countUp('clientsVal','12',40);
+  countUp('auditsVal','47',25);
+  countUp('convVal','31%',50);
+  setTimeout(()=>{
+    document.getElementById('scoreNum').textContent='78';
+    document.getElementById('ringFill').style.strokeDashoffset = 283 - (283 * 78/100);
+  },400);
+}
+
+function countUp(id,target,speed){
+  const el=document.getElementById(id);
+  const isStr = isNaN(target.replace(/[$,%]/g,''));
+  if(isStr){setTimeout(()=>el.textContent=target,300);return;}
+  const num=parseFloat(target.replace(/[$,%,]/g,''));
+  const prefix=target.startsWith('$')?'$':'';
+  const suffix=target.endsWith('%')?'%':'';
+  let cur=0;const step=num/30;
+  const interval=setInterval(()=>{
+    cur=Math.min(cur+step,num);
+    const display = num>=1000 ? prefix+Math.floor(cur).toLocaleString()+suffix : prefix+Math.floor(cur)+suffix;
+    el.textContent=display;
+    if(cur>=num)clearInterval(interval);
+  },speed);
+}
+
+function renderPipeline(){
+  const board=document.getElementById('pipelineBoard');
+  board.innerHTML='';
+  Object.entries(pipeline).forEach(([col,leads])=>{
+    const colEl=document.createElement('div');
+    colEl.className='pipeline-col';
+    colEl.innerHTML=`<div class="pipeline-col-header"><div class="col-name">${col}</div><div class="col-count">${leads.length}</div></div><div class="pipeline-cards">${
+      leads.map((l,i)=>`<div class="lead-card" style="animation-delay:${i*0.05}s">
+        <div class="lead-name">${l.name}</div>
+        <div class="lead-biz">${l.biz}</div>
+        <div class="lead-meta">
+          <span class="lead-tier tier-badge-${l.tier}">T${l.tier}</span>
+          <span class="lead-time">${l.time}</span>
+          <span class="lead-score score-${l.heat}"></span>
+        </div>
+      </div>`).join('')
+    }</div>`;
+    board.appendChild(colEl);
+  });
+}
+
+function renderChart(){
+  const chart=document.getElementById('revenueChart');
+  const max=Math.max(...chartData.map(d=>d.val));
+  chart.innerHTML=chartData.map(d=>`
+    <div class="bar-group">
+      <div class="bar-wrap">
+        <div class="bar${d.current?' current':''}" style="height:${(d.val/max)*140}px">
+          <div class="bar-tooltip">$${d.val.toLocaleString()}</div>
+        </div>
+      </div>
+      <div class="bar-label">${d.month}</div>
+    </div>
+  `).join('');
+}
+
+function renderActivity(){
+  const feed=document.getElementById('activityFeed');
+  feed.innerHTML=activity.map(a=>`
+    <div class="activity-item">
+      <div class="activity-icon icon-${a.type}">${a.icon}</div>
+      <div class="activity-content">
+        <div class="activity-text">${a.text}</div>
+        <div class="activity-time">${a.time}</div>
+      </div>
+      ${a.amt?`<div class="activity-amount">${a.amt}</div>`:''}
+    </div>
+  `).join('');
+}
+
+function renderClients(){
+  const statusMap={active:'active',building:'building',review:'review',new:'new'};
+  const statusLabel={active:'Live ✓',building:'Building',review:'In Review',new:'New'};
+  document.getElementById('clientsBody').innerHTML=clients.map(c=>`
+    <tr>
+      <td><strong>${c.name}</strong></td>
+      <td style="color:var(--muted2)">${c.biz}</td>
+      <td style="font-size:0.78rem">${c.pkg}</td>
+      <td><span class="status-badge status-${statusMap[c.status]}">${statusLabel[c.status]}</span></td>
+      <td>
+        <div style="font-size:0.72rem;color:var(--muted);margin-bottom:3px">${c.progress}%</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${c.progress}%"></div></div>
+      </td>
+      <td style="font-family:'Syne',sans-serif;font-weight:700;color:var(--gold)">$${c.rev.toLocaleString()}</td>
+      <td style="color:var(--muted2);font-size:0.78rem">${c.date}</td>
+    </tr>
+  `).join('');
+}
+
+function showTab(tab){
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.querySelector('.topbar-title').textContent = {
+    dashboard:'Dashboard Overview',leads:'Lead Pipeline',
+    clients:'Clients',audits:'Audits',revenue:'Revenue',
+    invoices:'Invoices',settings:'Settings'
+  }[tab]||'Dashboard';
+}
+
+// ── DATE ──
+const d=new Date();
+document.getElementById('currentDate').textContent=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+
+// ── INIT ──
+renderMetrics();
+renderPipeline();
+renderChart();
+renderActivity();
+renderClients();
+
+// Simulate live activity
+let activityTypes=[
+  ()=>({type:'audit',icon:'📊',text:`New audit — <strong>${['Sunrise Barbershop','Peak Performance Gym','Clean Cut Studio'][Math.floor(Math.random()*3)]}</strong>`,time:'Just now',amt:''}),
+  ()=>({type:'lead',icon:'◈',text:`New lead from audit tool`,time:'Just now',amt:''}),
+];
+setInterval(()=>{
+  const feed=document.getElementById('activityFeed');
+  const item=activityTypes[Math.floor(Math.random()*activityTypes.length)]();
+  const div=document.createElement('div');
+  div.className='activity-item';
+  div.style.background='rgba(201,168,76,0.05)';
+  div.innerHTML=`<div class="activity-icon icon-${item.type}">${item.icon}</div><div class="activity-content"><div class="activity-text">${item.text}</div><div class="activity-time">${item.time}</div></div>`;
+  feed.insertBefore(div,feed.firstChild);
+  setTimeout(()=>div.style.background='',2000);
+  if(feed.children.length>8)feed.removeChild(feed.lastChild);
+},12000);
+</script>
+</body>
+</html>

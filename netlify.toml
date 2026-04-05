@@ -1,0 +1,51 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+  command = "npm install"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/"
+  to = "/public/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/checkout"
+  to = "/pages/checkout.html"
+  status = 200
+
+[[redirects]]
+  from = "/dashboard"
+  to = "/pages/dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/legal"
+  to = "/legal/legal.html"
+  status = 200
+
+[[redirects]]
+  from = "/api/claude"
+  to = "/.netlify/functions/claude-proxy"
+  status = 200
+
+[[redirects]]
+  from = "/api/payment"
+  to = "/.netlify/functions/create-payment-intent"
+  status = 200
+
+[[redirects]]
+  from = "/api/stripe-webhook"
+  to = "/.netlify/functions/stripe-webhook"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    X-XSS-Protection = "1; mode=block"

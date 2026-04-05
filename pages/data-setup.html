@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SystemForge AI — Data Setup Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0A0A0A;--dark:#111;--card:#161616;--card2:#1a1a1a;
+  --border:#222;--border2:#2a2a2a;
+  --gold:#C9A84C;--gold-light:#E8C96A;--gold-dim:rgba(201,168,76,0.1);
+  --white:#F5F0E8;--muted:#666;--muted2:#999;
+  --green:#4CAF78;--green-dim:rgba(76,175,120,0.1);
+  --blue:#5B8DEF;--red:#FF4444;
+}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;line-height:1.7;padding-bottom:80px}
+h1,h2,h3,h4{font-family:'Syne',sans-serif}
+a{color:var(--gold);text-decoration:none}
+a:hover{color:var(--gold-light)}
+
+nav{padding:20px 48px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);z-index:100}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;display:flex;align-items:center;gap:10px}
+.logo span{color:var(--gold)}
+
+.hero{padding:60px 48px 48px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(201,168,76,0.04) 0%,transparent 100%)}
+.hero-tag{font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.hero h1{font-size:2.2rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:12px}
+.hero p{color:var(--muted2);font-size:0.95rem;max-width:560px;line-height:1.7}
+
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+@media(max-width:860px){.layout{grid-template-columns:1fr}}
+
+.sidebar{padding:32px 20px;border-right:1px solid var(--border);position:sticky;top:65px;height:calc(100vh - 65px);overflow-y:auto}
+@media(max-width:860px){.sidebar{display:none}}
+.sb-title{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.sb-item{display:block;padding:8px 10px;font-size:0.8rem;color:var(--muted2);border-left:2px solid transparent;margin-left:-10px;padding-left:10px;transition:all 0.2s;cursor:pointer}
+.sb-item:hover{color:var(--white);border-left-color:rgba(201,168,76,0.4)}
+.sb-item.active{color:var(--gold);border-left-color:var(--gold)}
+
+.content{padding:48px 56px;max-width:820px}
+@media(max-width:768px){.content{padding:32px 24px}}
+
+.step-section{margin-bottom:64px;scroll-margin-top:80px}
+.step-tag{font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.step-tag::before{content:'';width:20px;height:1px;background:var(--gold)}
+.step-section h2{font-size:1.5rem;font-weight:800;letter-spacing:-0.01em;margin-bottom:10px}
+.step-intro{font-size:0.9rem;color:var(--muted2);max-width:560px;line-height:1.7;margin-bottom:28px}
+
+/* CODE BLOCKS */
+.code-block{background:var(--dark);border:1px solid var(--border2);padding:24px;font-family:'DM Mono',monospace;font-size:0.8rem;color:#ccc;line-height:1.8;position:relative;overflow-x:auto;margin:16px 0}
+.code-block .kw{color:var(--gold)}
+.code-block .str{color:#a8d8a8}
+.code-block .cm{color:#555;font-style:italic}
+.code-block .fn{color:var(--blue)}
+.code-label{position:absolute;top:10px;right:12px;font-size:0.62rem;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;font-family:'DM Sans',sans-serif}
+.copy-code{position:absolute;top:8px;right:80px;background:var(--border2);border:none;color:var(--muted2);font-size:0.7rem;padding:3px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.copy-code:hover{background:var(--gold);color:var(--black)}
+
+/* STEPS */
+.setup-steps{display:flex;flex-direction:column;gap:16px}
+.setup-step{background:var(--card);border:1px solid var(--border);padding:20px 24px;display:flex;gap:16px}
+.step-num-box{width:32px;height:32px;background:var(--gold);color:var(--black);font-family:'Syne',sans-serif;font-weight:800;font-size:0.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-content h4{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:6px}
+.step-content p{font-size:0.82rem;color:#aaa;line-height:1.6}
+.step-content a{color:var(--gold)}
+.step-tip{background:var(--gold-dim);border-left:2px solid var(--gold);padding:8px 14px;font-size:0.78rem;color:#bbb;margin-top:10px;line-height:1.5}
+
+/* TABLE BOXES */
+.table-box{background:var(--card);border:1px solid var(--border);overflow:hidden;margin:16px 0}
+.table-box table{width:100%;border-collapse:collapse}
+.table-box th{background:var(--card2);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:10px 16px;text-align:left;border-bottom:1px solid var(--border)}
+.table-box td{padding:10px 16px;font-size:0.82rem;border-bottom:1px solid var(--border);vertical-align:top}
+.table-box tr:last-child td{border-bottom:none}
+.table-box td:first-child{font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--gold)}
+.table-box td:nth-child(2){color:#ccc}
+.table-box td:nth-child(3){color:var(--muted2);font-size:0.78rem}
+
+/* INFO BOXES */
+.info{padding:18px 22px;margin:16px 0;font-size:0.85rem;line-height:1.6;border-left:3px solid}
+.info.gold{background:var(--gold-dim);border-color:var(--gold);color:#ccc}
+.info.green{background:var(--green-dim);border-color:var(--green);color:#ccc}
+.info.red{background:rgba(255,68,68,0.06);border-color:var(--red);color:#ccc}
+.info strong{color:var(--white)}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.cl-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;background:var(--card);border:1px solid var(--border);cursor:pointer;transition:border-color 0.2s}
+.cl-item:hover{border-color:rgba(201,168,76,0.3)}
+.cl-item.done{opacity:0.55}
+.cl-check{width:18px;height:18px;border:1px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;transition:all 0.2s;font-family:'Syne',sans-serif;font-weight:800}
+.cl-item.done .cl-check{background:var(--green);border-color:var(--green);color:white}
+.cl-text{font-size:0.85rem;color:#bbb;line-height:1.4}
+.cl-item.done .cl-text{text-decoration:line-through}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <svg width="24" height="24" viewBox="0 0 44 44" fill="none"><rect x="2" y="2" width="40" height="40" stroke="#C9A84C" stroke-width="1.5"/><path d="M10 32 L10 18 L22 12 L34 18 L34 32" stroke="#C9A84C" stroke-width="2" fill="none"/><path d="M10 32 L34 32" stroke="#C9A84C" stroke-width="2"/><rect x="8" y="30" width="28" height="4" fill="#C9A84C"/></svg>
+    System<span>Forge</span> AI — Data Setup
+  </div>
+  <a href="/" style="font-size:0.82rem;color:var(--muted)">← Back to Site</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">Owner Setup Guide — Do This Once</div>
+  <h1>Data Capture &amp; Storage Setup</h1>
+  <p>This guide walks you through connecting your platform to a real database so every lead, audit, client, and dollar is captured and stored permanently. Takes about 45 minutes. Do it once, runs forever.</p>
+</div>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="sb-title">Steps</div>
+  <a class="sb-item active" href="#overview">What Gets Captured</a>
+  <a class="sb-item" href="#supabase">Step 1 — Supabase Setup</a>
+  <a class="sb-item" href="#tables">Step 2 — Create Tables</a>
+  <a class="sb-item" href="#keys">Step 3 — Get Your Keys</a>
+  <a class="sb-item" href="#inject">Step 4 — Add to Your Files</a>
+  <a class="sb-item" href="#email">Step 5 — Email Alerts</a>
+  <a class="sb-item" href="#backup">Step 6 — Backups</a>
+  <a class="sb-item" href="#checklist">Launch Checklist</a>
+</aside>
+
+<main class="content">
+
+  <!-- OVERVIEW -->
+  <section class="step-section" id="overview">
+    <div class="step-tag">Overview</div>
+    <h2>What gets captured</h2>
+    <p class="step-intro">Every touchpoint on your platform generates data. Here's exactly what gets saved and why each piece matters to your business.</p>
+
+    <div class="table-box">
+      <table>
+        <thead><tr><th>Data Type</th><th>What It Contains</th><th>Why It Matters</th></tr></thead>
+        <tbody>
+          <tr><td>audit_leads</td><td>Business type, industry, audit conversation, revenue leak amount, missing systems, timestamp, IP</td><td>Every person who runs an audit — even if they don't buy. This is your warm lead list.</td></tr>
+          <tr><td>audit_reports</td><td>Full audit results: leak amount, missing systems, recommended fixes, business name if provided</td><td>The actual output of every audit. Searchable. Referenceable when you follow up.</td></tr>
+          <tr><td>checkout_submissions</td><td>Name, email, phone, business name, industry, revenue range, pain points, tools, goals, tier selected, amount</td><td>Every person who fills out checkout — paid or not. Your active sales pipeline.</td></tr>
+          <tr><td>paid_clients</td><td>All checkout data + payment confirmed flag, Stripe payment ID, tier, delivery status, delivery date</td><td>Your paying client database. Tracks build progress, delivery, and follow-up schedule.</td></tr>
+          <tr><td>page_views</td><td>Page visited, referrer source, timestamp, session ID</td><td>Where traffic comes from. Tells you which outreach channel is working.</td></tr>
+          <tr><td>modal_clicks</td><td>Which CTA button was clicked, what tier, timestamp</td><td>Conversion funnel data — see where people drop off before buying.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info gold"><strong>Your most valuable asset:</strong> The audit_leads table. Every person who runs your free audit is a warm lead — they already know they have a problem. This list is worth more than anything else you'll build. Guard it, follow up on it weekly.</div>
+  </section>
+
+  <!-- STEP 1: SUPABASE -->
+  <section class="step-section" id="supabase">
+    <div class="step-tag">Step 01</div>
+    <h2>Create your Supabase account</h2>
+    <p class="step-intro">Supabase is your database. Free plan holds up to 500MB — enough for tens of thousands of leads and clients. Takes 5 minutes to set up.</p>
+
+    <div class="setup-steps">
+      <div class="setup-step">
+        <div class="step-num-box">1</div>
+        <div class="step-content">
+          <h4>Go to supabase.com</h4>
+          <p>Click "Start your project" — sign up with your Google account or email. It's free.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num-box">2</div>
+        <div class="step-content">
+          <h4>Create a new project</h4>
+          <p>Click "New Project." Name it <strong>systemforge-ai</strong>. Choose a strong database password and save it somewhere safe (1Password or your notes app). Select region: <strong>US East</strong>.</p>
+          <div class="step-tip">⚠️ Save your database password. You cannot recover it. Store it in your phone notes right now.</div>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num-box">3</div>
+        <div class="step-content">
+          <h4>Wait for project to launch</h4>
+          <p>Takes about 60 seconds. You'll see a green "Project is ready" status. Then move to Step 2.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2: TABLES -->
+  <section class="step-section" id="tables">
+    <div class="step-tag">Step 02</div>
+    <h2>Create your database tables</h2>
+    <p class="step-intro">In Supabase, go to the <strong>SQL Editor</strong> (left sidebar). Click "New query." Paste each block below and click "Run." Do them in order.</p>
+
+    <div class="info gold"><strong>How to find SQL Editor:</strong> Inside your Supabase project → left sidebar → click the database icon → "SQL Editor" → "New query"</div>
+
+    <h3 style="margin:24px 0 12px;font-size:1rem">Table 1 — Audit Leads</h3>
+    <div class="code-block">
+      <span class="copy-code" onclick="copyCode(this)">Copy</span>
+      <span class="code-label">SQL</span>
+<span class="cm">-- Captures everyone who runs the free audit tool</span>
+<span class="kw">CREATE TABLE</span> audit_leads (
+  id          <span class="kw">UUID</span> <span class="kw">DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  created_at  <span class="kw">TIMESTAMPTZ DEFAULT</span> now(),
+  session_id  <span class="kw">TEXT</span>,
+  business_type <span class="kw">TEXT</span>,
+  industry    <span class="kw">TEXT</span>,
+  messages    <span class="kw">JSONB</span>,         <span class="cm">-- full conversation stored as JSON</span>
+  leak_amount <span class="kw">TEXT</span>,
+  missing_systems <span class="kw">TEXT[]</span>,
+  recommended_fixes <span class="kw">TEXT[]</span>,
+  report_shown <span class="kw">BOOLEAN DEFAULT</span> false,
+  cta_clicked  <span class="kw">BOOLEAN DEFAULT</span> false,
+  source_page  <span class="kw">TEXT</span>,
+  ip_address   <span class="kw">TEXT</span>
+);</div>
+
+    <h3 style="margin:24px 0 12px;font-size:1rem">Table 2 — Checkout Submissions</h3>
+    <div class="code-block">
+      <span class="copy-code" onclick="copyCode(this)">Copy</span>
+      <span class="code-label">SQL</span>
+<span class="cm">-- Captures everyone who fills out the checkout form</span>
+<span class="kw">CREATE TABLE</span> checkout_submissions (
+  id            <span class="kw">UUID DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  created_at    <span class="kw">TIMESTAMPTZ DEFAULT</span> now(),
+  first_name    <span class="kw">TEXT</span>,
+  last_name     <span class="kw">TEXT</span>,
+  email         <span class="kw">TEXT</span>,
+  phone         <span class="kw">TEXT</span>,
+  business_name <span class="kw">TEXT</span>,
+  industry      <span class="kw">TEXT</span>,
+  location      <span class="kw">TEXT</span>,
+  revenue_range <span class="kw">TEXT</span>,
+  website       <span class="kw">TEXT</span>,
+  pain_points   <span class="kw">TEXT[]</span>,
+  pain_desc     <span class="kw">TEXT</span>,
+  tools_used    <span class="kw">TEXT[]</span>,
+  goal_desc     <span class="kw">TEXT</span>,
+  tier_selected <span class="kw">INTEGER</span>,
+  tier_name     <span class="kw">TEXT</span>,
+  amount        <span class="kw">INTEGER</span>,         <span class="cm">-- in cents: 9700, 75000, 250000</span>
+  payment_status <span class="kw">TEXT DEFAULT</span> <span class="str">'pending'</span>,
+  stripe_payment_id <span class="kw">TEXT</span>,
+  consented_to_terms <span class="kw">BOOLEAN DEFAULT</span> false
+);</div>
+
+    <h3 style="margin:24px 0 12px;font-size:1rem">Table 3 — Paid Clients</h3>
+    <div class="code-block">
+      <span class="copy-code" onclick="copyCode(this)">Copy</span>
+      <span class="code-label">SQL</span>
+<span class="cm">-- Your active client database — created from checkout on payment confirmation</span>
+<span class="kw">CREATE TABLE</span> paid_clients (
+  id               <span class="kw">UUID DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  created_at       <span class="kw">TIMESTAMPTZ DEFAULT</span> now(),
+  checkout_id      <span class="kw">UUID REFERENCES</span> checkout_submissions(id),
+  first_name       <span class="kw">TEXT</span>,
+  last_name        <span class="kw">TEXT</span>,
+  email            <span class="kw">TEXT</span>,
+  phone            <span class="kw">TEXT</span>,
+  business_name    <span class="kw">TEXT</span>,
+  industry         <span class="kw">TEXT</span>,
+  tier_name        <span class="kw">TEXT</span>,
+  amount_paid      <span class="kw">INTEGER</span>,
+  stripe_payment_id <span class="kw">TEXT</span>,
+  build_status     <span class="kw">TEXT DEFAULT</span> <span class="str">'new'</span>,  <span class="cm">-- new | in_progress | delivered | complete</span>
+  delivery_deadline <span class="kw">TIMESTAMPTZ</span>,
+  delivered_at     <span class="kw">TIMESTAMPTZ</span>,
+  notes            <span class="kw">TEXT</span>,
+  follow_up_sent   <span class="kw">BOOLEAN DEFAULT</span> false
+);</div>
+
+    <h3 style="margin:24px 0 12px;font-size:1rem">Table 4 — Page Events</h3>
+    <div class="code-block">
+      <span class="copy-code" onclick="copyCode(this)">Copy</span>
+      <span class="code-label">SQL</span>
+<span class="cm">-- Lightweight analytics: page views + CTA clicks</span>
+<span class="kw">CREATE TABLE</span> page_events (
+  id         <span class="kw">UUID DEFAULT</span> gen_random_uuid() <span class="kw">PRIMARY KEY</span>,
+  created_at <span class="kw">TIMESTAMPTZ DEFAULT</span> now(),
+  event_type <span class="kw">TEXT</span>,    <span class="cm">-- 'page_view' | 'cta_click' | 'audit_start' | 'report_shown'</span>
+  page       <span class="kw">TEXT</span>,
+  detail     <span class="kw">TEXT</span>,
+  session_id <span class="kw">TEXT</span>
+);</div>
+
+    <h3 style="margin:24px 0 12px;font-size:1rem">Enable Row Level Security (run this too)</h3>
+    <div class="code-block">
+      <span class="copy-code" onclick="copyCode(this)">Copy</span>
+      <span class="code-label">SQL</span>
+<span class="cm">-- Lock down tables so only your app can write, only you can read</span>
+<span class="kw">ALTER TABLE</span> audit_leads <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">ALTER TABLE</span> checkout_submissions <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">ALTER TABLE</span> paid_clients <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+<span class="kw">ALTER TABLE</span> page_events <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+
+<span class="cm">-- Allow anon inserts (so your site can write data in)</span>
+<span class="kw">CREATE POLICY</span> <span class="str">"Allow anon insert"</span> <span class="kw">ON</span> audit_leads
+  <span class="kw">FOR INSERT TO</span> anon <span class="kw">WITH CHECK</span> (true);
+<span class="kw">CREATE POLICY</span> <span class="str">"Allow anon insert"</span> <span class="kw">ON</span> checkout_submissions
+  <span class="kw">FOR INSERT TO</span> anon <span class="kw">WITH CHECK</span> (true);
+<span class="kw">CREATE POLICY</span> <span class="str">"Allow anon insert"</span> <span class="kw">ON</span> paid_clients
+  <span class="kw">FOR INSERT TO</span> anon <span class="kw">WITH CHECK</span> (true);
+<span class="kw">CREATE POLICY</span> <span class="str">"Allow anon insert"</span> <span class="kw">ON</span> page_events
+  <span class="kw">FOR INSERT TO</span> anon <span class="kw">WITH CHECK</span> (true);</div>
+
+    <div class="info green"><strong>After running all 5 SQL blocks:</strong> Go to Table Editor in the left sidebar. You should see all 4 tables listed. If they're there — you're set.</div>
+  </section>
+
+  <!-- STEP 3: KEYS -->
+  <section class="step-section" id="keys">
+    <div class="step-tag">Step 03</div>
+    <h2>Get your Supabase keys</h2>
+    <p class="step-intro">These are the two pieces of information your website uses to communicate with your database. You'll need both.</p>
+
+    <div class="setup-steps">
+      <div class="setup-step">
+        <div class="step-num-box">1</div>
+        <div class="step-content">
+          <h4>Go to Project Settings</h4>
+          <p>Inside your Supabase project → click the gear icon (Settings) in the left sidebar → click <strong>API</strong></p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num-box">2</div>
+        <div class="step-content">
+          <h4>Copy your Project URL</h4>
+          <p>Looks like: <code style="background:var(--card2);padding:2px 8px;font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--gold)">https://xyzabcdef.supabase.co</code><br>Copy this and save it.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num-box">3</div>
+        <div class="step-content">
+          <h4>Copy your anon public key</h4>
+          <p>It's a long string starting with <code style="background:var(--card2);padding:2px 8px;font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--gold)">eyJ...</code> — this is your public API key. Safe to use in your HTML files.</p>
+          <div class="step-tip">⚠️ Never share or use your <strong>service_role</strong> key in your HTML files. Only the anon key goes in client-side code.</div>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num-box">4</div>
+        <div class="step-content">
+          <h4>Find the two lines below in each HTML file</h4>
+          <p>Every file has a section at the top of the &lt;script&gt; that says <code style="background:var(--card2);padding:2px 8px;font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--gold)">YOUR_SUPABASE_URL</code> and <code style="background:var(--card2);padding:2px 8px;font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--gold)">YOUR_SUPABASE_ANON_KEY</code> — replace those two placeholders with your real values.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 4: CODE TO INJECT -->
+  <section class="step-section" id="inject">
+    <div class="step-tag">Step 04</div>
+    <h2>Data capture code</h2>
+    <p class="step-intro">This is the JavaScript that goes at the top of your &lt;script&gt; block in <strong>systemforge.html</strong> and <strong>checkout.html</strong>. It handles all saving automatically.</p>
+
+    <div class="info gold"><strong>Where to paste:</strong> Open systemforge.html in a text editor (Notepad on Windows, TextEdit on Mac). Find the line that says <code style="font-family:'DM Mono',monospace">&lt;script&gt;</code> near the bottom. Paste the code block below right after that opening tag, before any other JavaScript.</div>
+
+    <h3 style="margin:24px 0 12px;font-size:1rem">Paste into systemforge.html — top of &lt;script&gt; block</h3>
+    <div class="code-block" style="max-height:420px;overflow-y:auto">
+      <span class="copy-code" onclick="copyCode(this)">Copy</span>
+      <span class="code-label">JavaScript</span>
+<span class="cm">// ── SYSTEMFORGE DATA CAPTURE ─────────────────────────────</span>
+<span class="kw">const</span> SF_URL  = <span class="str">'YOUR_SUPABASE_URL'</span>;    <span class="cm">// replace with your URL</span>
+<span class="kw">const</span> SF_KEY  = <span class="str">'YOUR_SUPABASE_ANON_KEY'</span>; <span class="cm">// replace with your anon key</span>
+<span class="kw">const</span> SF_SESSION = <span class="fn">crypto</span>.randomUUID();  <span class="cm">// unique visitor ID per session</span>
+
+<span class="kw">async function</span> <span class="fn">sfSave</span>(table, data) {
+  <span class="kw">try</span> {
+    <span class="kw">await</span> <span class="fn">fetch</span>(`${SF_URL}/rest/v1/${table}`, {
+      method: <span class="str">'POST'</span>,
+      headers: {
+        <span class="str">'apikey'</span>: SF_KEY,
+        <span class="str">'Authorization'</span>: `Bearer ${SF_KEY}`,
+        <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+        <span class="str">'Prefer'</span>: <span class="str">'return=minimal'</span>
+      },
+      body: <span class="fn">JSON.stringify</span>(data)
+    });
+  } <span class="kw">catch</span>(e) {
+    <span class="fn">console</span>.warn(<span class="str">'SF save failed:'</span>, e);
+  }
+}
+
+<span class="cm">// Track page view on load</span>
+<span class="fn">sfSave</span>(<span class="str">'page_events'</span>, {
+  event_type: <span class="str">'page_view'</span>,
+  page: <span class="str">'systemforge'</span>,
+  session_id: SF_SESSION
+});
+
+<span class="cm">// Save lead when audit report is generated</span>
+<span class="cm">// ADD this call inside your existing showReport() function:</span>
+<span class="cm">// sfSave('audit_leads', {</span>
+<span class="cm">//   session_id: SF_SESSION,</span>
+<span class="cm">//   leak_amount: leak,</span>
+<span class="cm">//   missing_systems: missing,</span>
+<span class="cm">//   recommended_fixes: fixes,</span>
+<span class="cm">//   messages: messages,</span>
+<span class="cm">//   report_shown: true,</span>
+<span class="cm">//   source_page: 'systemforge'</span>
+<span class="cm">// });</span>
+
+<span class="cm">// Save CTA click when modal opens</span>
+<span class="cm">// ADD this line at the top of your openModal() function:</span>
+<span class="cm">// sfSave('page_events', { event_type: 'cta_click', page: 'systemforge', detail: type, session_id: SF_SESSION });</span>
+<span class="cm">// ─────────────────────────────────────────────────────────</span></div>
+
+    <h3 style="margin:24px 0 12px;font-size:1rem">Paste into checkout.html — top of &lt;script&gt; block</h3>
+    <div class="code-block" style="max-height:400px;overflow-y:auto">
+      <span class="copy-code" onclick="copyCode(this)">Copy</span>
+      <span class="code-label">JavaScript</span>
+<span class="cm">// ── SYSTEMFORGE CHECKOUT DATA CAPTURE ────────────────────</span>
+<span class="kw">const</span> SF_URL  = <span class="str">'YOUR_SUPABASE_URL'</span>;
+<span class="kw">const</span> SF_KEY  = <span class="str">'YOUR_SUPABASE_ANON_KEY'</span>;
+<span class="kw">const</span> SF_SESSION = <span class="fn">crypto</span>.randomUUID();
+
+<span class="kw">async function</span> <span class="fn">sfSave</span>(table, data) {
+  <span class="kw">try</span> {
+    <span class="kw">await</span> <span class="fn">fetch</span>(`${SF_URL}/rest/v1/${table}`, {
+      method: <span class="str">'POST'</span>,
+      headers: {
+        <span class="str">'apikey'</span>: SF_KEY,
+        <span class="str">'Authorization'</span>: `Bearer ${SF_KEY}`,
+        <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+        <span class="str">'Prefer'</span>: <span class="str">'return=minimal'</span>
+      },
+      body: <span class="fn">JSON.stringify</span>(data)
+    });
+  } <span class="kw">catch</span>(e) {
+    <span class="fn">console</span>.warn(<span class="str">'SF save:'</span>, e);
+  }
+}
+
+<span class="cm">// Track checkout page visit</span>
+<span class="fn">sfSave</span>(<span class="str">'page_events'</span>, { event_type: <span class="str">'page_view'</span>, page: <span class="str">'checkout'</span>, session_id: SF_SESSION });
+
+<span class="cm">// REPLACE your submitOrder() function with this version:</span>
+<span class="kw">async function</span> <span class="fn">submitOrder</span>() {
+  <span class="kw">const</span> btn = <span class="fn">document</span>.getElementById(<span class="str">'submitBtn'</span>);
+  <span class="kw">const</span> consent = <span class="fn">document</span>.getElementById(<span class="str">'legalConsent'</span>);
+  <span class="kw">const</span> required = [<span class="str">'firstName'</span>,<span class="str">'lastName'</span>,<span class="str">'email'</span>,<span class="str">'phone'</span>,<span class="str">'bizName'</span>,<span class="str">'industry'</span>];
+  <span class="kw">let</span> valid = <span class="kw">true</span>;
+  required.<span class="fn">forEach</span>(id => {
+    <span class="kw">const</span> el = <span class="fn">document</span>.getElementById(id);
+    <span class="kw">if</span> (!el?.value.trim()) { el.style.borderColor=<span class="str">'var(--red)'</span>; valid=<span class="kw">false</span>; }
+    <span class="kw">else</span> el.style.borderColor=<span class="str">'var(--border)'</span>;
+  });
+  <span class="kw">if</span> (!valid) { <span class="fn">alert</span>(<span class="str">'Please fill in all required fields.'</span>); <span class="kw">return</span>; }
+  <span class="kw">if</span> (consent && !consent.checked) { <span class="fn">alert</span>(<span class="str">'Please agree to the Terms of Service.'</span>); <span class="kw">return</span>; }
+
+  btn.disabled = <span class="kw">true</span>;
+  btn.textContent = <span class="str">'Processing...'</span>;
+
+  <span class="cm">// Collect all pain points and tools checkboxes</span>
+  <span class="kw">const</span> painPoints = [...<span class="fn">document</span>.querySelectorAll(<span class="str">'input[type=checkbox]:checked'</span>)]
+    .filter(cb => [<span class="str">'no-lead-capture'</span>,<span class="str">'no-followup'</span>,<span class="str">'no-crm'</span>,<span class="str">'no-booking'</span>,<span class="str">'manual-onboarding'</span>,<span class="str">'no-retention'</span>].includes(cb.value))
+    .map(cb => cb.value);
+  <span class="kw">const</span> toolsUsed = [...<span class="fn">document</span>.querySelectorAll(<span class="str">'input[type=checkbox]:checked'</span>)]
+    .filter(cb => [<span class="str">'instagram'</span>,<span class="str">'google'</span>,<span class="str">'square'</span>,<span class="str">'calendly'</span>,<span class="str">'mailchimp'</span>,<span class="str">'none'</span>].includes(cb.value))
+    .map(cb => cb.value);
+
+  <span class="kw">const</span> t = tiers[selectedTier];
+  <span class="kw">const</span> submission = {
+    first_name:    <span class="fn">document</span>.getElementById(<span class="str">'firstName'</span>)?.value,
+    last_name:     <span class="fn">document</span>.getElementById(<span class="str">'lastName'</span>)?.value,
+    email:         <span class="fn">document</span>.getElementById(<span class="str">'email'</span>)?.value,
+    phone:         <span class="fn">document</span>.getElementById(<span class="str">'phone'</span>)?.value,
+    business_name: <span class="fn">document</span>.getElementById(<span class="str">'bizName'</span>)?.value,
+    industry:      <span class="fn">document</span>.getElementById(<span class="str">'industry'</span>)?.value,
+    location:      <span class="fn">document</span>.getElementById(<span class="str">'location'</span>)?.value,
+    revenue_range: <span class="fn">document</span>.getElementById(<span class="str">'revenue'</span>)?.value,
+    website:       <span class="fn">document</span>.getElementById(<span class="str">'website'</span>)?.value,
+    pain_points:   painPoints,
+    pain_desc:     <span class="fn">document</span>.getElementById(<span class="str">'painDesc'</span>)?.value,
+    tools_used:    toolsUsed,
+    goal_desc:     <span class="fn">document</span>.getElementById(<span class="str">'goalDesc'</span>)?.value,
+    tier_selected: selectedTier,
+    tier_name:     t.name,
+    amount:        t.price * 100,
+    payment_status: <span class="str">'pending'</span>,
+    consented_to_terms: consent?.checked || <span class="kw">false</span>
+  };
+
+  <span class="cm">// Save to Supabase immediately</span>
+  <span class="kw">await</span> <span class="fn">sfSave</span>(<span class="str">'checkout_submissions'</span>, submission);
+
+  <span class="cm">// Simulate Stripe payment (replace with real Stripe.js later)</span>
+  <span class="fn">setTimeout</span>(() => {
+    <span class="cm">// On real payment success, also save to paid_clients:</span>
+    <span class="fn">sfSave</span>(<span class="str">'paid_clients'</span>, {
+      ...submission,
+      amount_paid: t.price * 100,
+      build_status: <span class="str">'new'</span>
+    });
+
+    <span class="fn">document</span>.getElementById(<span class="str">'checkoutPage'</span>).style.display=<span class="str">'none'</span>;
+    <span class="kw">const</span> s = <span class="fn">document</span>.getElementById(<span class="str">'successScreen'</span>);
+    s.classList.add(<span class="str">'visible'</span>);
+    <span class="fn">document</span>.getElementById(<span class="str">'successStep3'</span>).textContent = tiers[selectedTier].successStep3;
+    window.<span class="fn">scrollTo</span>({top:<span class="kw">0</span>,behavior:<span class="str">'smooth'</span>});
+  }, <span class="kw">1800</span>);
+}
+<span class="cm">// ─────────────────────────────────────────────────────────</span></div>
+  </section>
+
+  <!-- STEP 5: EMAIL ALERTS -->
+  <section class="step-section" id="email">
+    <div class="step-tag">Step 05</div>
+    <h2>Email alerts — get notified instantly</h2>
+    <p class="step-intro">Set this up so you get an email the second someone pays or completes an audit. Free through Supabase + Resend.</p>
+
+    <div class="setup-steps">
+      <div class="setup-step">
+        <div class="step-num-box">1</div>
+        <div class="step-content">
+          <h4>Create a Resend account</h4>
+          <p>Go to <a href="https://resend.com" target="_blank">resend.com</a> — free plan sends 3,000 emails/month. Sign up and create an API key. Save it.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num-box">2</div>
+        <div class="step-content">
+          <h4>Create a Supabase Edge Function</h4>
+          <p>In Supabase → Edge Functions → New Function → name it <strong>notify-owner</strong>. This runs automatically when a new paid client row is inserted.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num-box">3</div>
+        <div class="step-content">
+          <h4>Paste this function code</h4>
+          <div class="code-block" style="font-size:0.75rem">
+<span class="kw">import</span> { serve } from <span class="str">'https://deno.land/std/http/server.ts'</span>
+serve(<span class="kw">async</span> (req) => {
+  <span class="kw">const</span> { record } = <span class="kw">await</span> req.json()
+  <span class="kw">await</span> fetch(<span class="str">'https://api.resend.com/emails'</span>, {
+    method: <span class="str">'POST'</span>,
+    headers: {
+      <span class="str">'Authorization'</span>: <span class="str">`Bearer YOUR_RESEND_KEY`</span>,
+      <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>
+    },
+    body: JSON.stringify({
+      from: <span class="str">'SystemForge AI &lt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6405080116101724171d17100109020b160301050d4a070b09">[email&#160;protected]</a>&gt;'</span>,
+      to: <span class="str">'<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2d7462787f7268606c64616d4a404c4441034e4240">[email&#160;protected]</a>'</span>,
+      subject: <span class="str">`💰 New Client: ${record.business_name} — $${record.amount_paid/100}`</span>,
+      html: <span class="str">`&lt;h2&gt;New paid client!&lt;/h2&gt;
+        &lt;p&gt;&lt;strong&gt;${record.first_name} ${record.last_name}&lt;/strong&gt;&lt;/p&gt;
+        &lt;p&gt;${record.business_name} · ${record.industry}&lt;/p&gt;
+        &lt;p&gt;Package: ${record.tier_name} — $${record.amount_paid/100}&lt;/p&gt;
+        &lt;p&gt;Email: ${record.email} · Phone: ${record.phone}&lt;/p&gt;`</span>
+    })
+  })
+  return new Response(<span class="str">'OK'</span>)
+})</div>
+          <div class="step-tip">Replace YOUR_RESEND_KEY with your Resend API key and YOUR_EMAIL with your Gmail address.</div>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num-box">4</div>
+        <div class="step-content">
+          <h4>Create the database webhook</h4>
+          <p>In Supabase → Database → Webhooks → Create webhook. Set it to fire on <strong>INSERT</strong> on the <strong>paid_clients</strong> table. Point it to your Edge Function URL. Done — you'll get an email every time money comes in.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 6: BACKUPS -->
+  <section class="step-section" id="backup">
+    <div class="step-tag">Step 06</div>
+    <h2>Backups — protect everything</h2>
+    <p class="step-intro">Supabase free plan includes daily backups retained for 7 days. Here's how to make sure you have an extra layer.</p>
+
+    <div class="setup-steps">
+      <div class="setup-step">
+        <div class="step-num-box">1</div>
+        <div class="step-content">
+          <h4>Weekly manual export</h4>
+          <p>Every Sunday: Supabase → Table Editor → select any table → click the download icon → Export as CSV. Save to a folder called <strong>SF_Backups</strong> in Google Drive. Takes 2 minutes.</p>
+        </div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num-box">2</div>
+        <div class="step-content">
+          <h4>Upgrade to Supabase Pro when ready</h4>
+          <p>At $25/month, Pro gives you Point-in-Time Recovery — meaning you can restore your database to any minute in the past. Once you're generating consistent revenue, upgrade. It's insurance.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="info green"><strong>Free plan limits to know:</strong> 500MB storage (holds ~500,000 leads easily), 2GB bandwidth/month, 50,000 monthly active users. You won't hit these limits in your first year at normal growth.</div>
+  </section>
+
+  <!-- LAUNCH CHECKLIST -->
+  <section class="step-section" id="checklist">
+    <div class="step-tag">Final Check</div>
+    <h2>Data capture launch checklist</h2>
+    <p class="step-intro">Run through every item before going live. Each checkbox is a piece of data you can't recover if it's missing from day one.</p>
+
+    <div class="checklist">
+      <div class="cl-item" onclick="toggleCL(this)"><div class="cl-check"></div><div class="cl-text">Supabase project created and all 4 tables exist in Table Editor</div></div>
+      <div class="cl-item" onclick="toggleCL(this)"><div class="cl-check"></div><div class="cl-text">Row Level Security enabled on all 4 tables + anon insert policies created</div></div>
+      <div class="cl-item" onclick="toggleCL(this)"><div class="cl-check"></div><div class="cl-text">Supabase Project URL and anon key copied and saved</div></div>
+      <div class="cl-item" onclick="toggleCL(this)"><div class="cl-check"></div><div class="cl-text">SF_URL and SF_KEY replaced in systemforge.html (not the placeholder text)</div></div>
+      <div class="cl-item" onclick="toggleCL(this)"><div class="cl-check"></div><div class="cl-text">SF_URL and SF_KEY replaced in checkout.html</div></div>
+      <div class="cl-item" onclick="toggleCL(this)"><div class="cl-check"></div><div class="cl-text">Tested: ran a full audit on your own site and checked Supabase Table Editor for the new row in audit_leads</div></div>
+      <div class="cl-item" onclick="toggleCL(this)"><div class="cl-check"></div><div class="cl-text">Tested: submitted checkout form and verified new row in checkout_submissions</div></div>
+      <div class="cl-item" onclick="toggleCL(this)"><div class="cl-check"></div><div class="cl-text">Resend account created and email alert function deployed</div></div>
+      <div class="cl-item" onclick="toggleCL(this)"><div class="cl-check"></div><div class="cl-text">Tested email alert by inserting a test row in paid_clients table directly</div></div>
+      <div class="cl-item" onclick="toggleCL(this)"><div class="cl-check"></div><div class="cl-text">Google Drive backup folder created — SF_Backups</div></div>
+      <div class="cl-item" onclick="toggleCL(this)"><div class="cl-check"></div><div class="cl-text">Calendar reminder set for every Sunday: export CSV backup</div></div>
+    </div>
+
+    <div class="info gold" style="margin-top:24px"><strong>When everything is checked:</strong> Your platform captures and permanently stores every audit, every lead, every dollar, and every client. Nothing slips through. Go get your first client.</div>
+  </section>
+
+</main>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function copyCode(btn) {
+  const block = btn.closest('.code-block');
+  const text = block.innerText.replace('Copy','').replace(/^\s*[A-Z]+\s*\n/,'').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.style.background = 'var(--green)';
+    btn.style.color = 'var(--black)';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = ''; btn.style.color = ''; }, 2000);
+  });
+}
+
+function toggleCL(item) {
+  item.classList.toggle('done');
+  item.querySelector('.cl-check').textContent = item.classList.contains('done') ? '✓' : '';
+}
+
+// Scroll spy
+const sections = 

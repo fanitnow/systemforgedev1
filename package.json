@@ -1,0 +1,12 @@
+{
+  "name": "systemforge-ai",
+  "version": "1.0.0",
+  "description": "SystemForge AI — Built in 48 hours. Running forever.",
+  "private": true,
+  "dependencies": {
+    "stripe": "^14.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

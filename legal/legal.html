@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SystemForge AI — Legal & Policies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0A0A0A;--dark:#111;--card:#161616;--border:#222;
+  --gold:#C9A84C;--gold-dim:rgba(201,168,76,0.1);
+  --white:#F5F0E8;--muted:#777;--muted2:#999;
+}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;line-height:1.7}
+h1,h2,h3,h4{font-family:'Syne',sans-serif}
+
+nav{padding:20px 48px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);z-index:100}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem}
+.logo span{color:var(--gold)}
+.back{font-size:0.82rem;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.back:hover{color:var(--white)}
+
+.page-layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+@media(max-width:860px){.page-layout{grid-template-columns:1fr}}
+
+/* SIDEBAR */
+.legal-nav{padding:40px 24px;border-right:1px solid var(--border);position:sticky;top:65px;height:calc(100vh - 65px);overflow-y:auto}
+@media(max-width:860px){.legal-nav{display:none}}
+.ln-title{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.ln-item{display:block;padding:8px 12px;font-size:0.8rem;color:var(--muted2);text-decoration:none;border-left:2px solid transparent;transition:all 0.2s;cursor:pointer}
+.ln-item:hover{color:var(--white);border-left-color:rgba(201,168,76,0.4)}
+.ln-item.active{color:var(--gold);border-left-color:var(--gold);background:var(--gold-dim)}
+.ln-updated{margin-top:32px;padding-top:20px;border-top:1px solid var(--border);font-size:0.7rem;color:var(--muted)}
+
+/* CONTENT */
+.legal-content{padding:60px 64px;max-width:860px}
+@media(max-width:768px){.legal-content{padding:40px 24px}}
+
+.legal-hero{margin-bottom:60px;padding-bottom:40px;border-bottom:1px solid var(--border)}
+.legal-hero-tag{font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.legal-hero h1{font-size:2.4rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:12px}
+.legal-hero p{color:var(--muted2);font-size:0.9rem;max-width:500px}
+.effective-date{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);padding:6px 16px;font-size:0.75rem;color:var(--gold);margin-top:16px}
+
+/* POLICY SECTIONS */
+.policy-section{margin-bottom:72px;scroll-margin-top:80px}
+.policy-section-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.policy-num{font-family:'Syne',sans-serif;font-size:0.7rem;color:var(--gold);background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);padding:4px 12px;letter-spacing:0.08em;flex-shrink:0}
+.policy-section h2{font-size:1.4rem;font-weight:800;letter-spacing:-0.01em}
+.policy-section h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin:28px 0 10px;color:var(--white)}
+.policy-section p{font-size:0.88rem;color:#bbb;margin-bottom:14px;line-height:1.75}
+.policy-section ul,.policy-section ol{margin:10px 0 16px 0;padding-left:0;list-style:none}
+.policy-section ul li,.policy-section ol li{font-size:0.88rem;color:#bbb;padding:6px 0 6px 20px;position:relative;line-height:1.65}
+.policy-section ul li::before{content:'→';color:var(--gold);position:absolute;left:0;font-size:0.75rem;top:8px}
+.policy-section ol{counter-reset:ol-counter}
+.policy-section ol li{counter-increment:ol-counter}
+.policy-section ol li::before{content:counter(ol-counter)'.';color:var(--gold);position:absolute;left:0;font-size:0.75rem;font-weight:700;top:8px}
+
+.highlight-box{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--gold);padding:20px 24px;margin:20px 0;font-size:0.85rem;color:#bbb;line-height:1.7}
+.highlight-box strong{color:var(--white)}
+.warning-box{background:rgba(255,68,68,0.05);border:1px solid rgba(255,68,68,0.15);border-left:3px solid #FF4444;padding:20px 24px;margin:20px 0;font-size:0.85rem;color:#bbb;line-height:1.7}
+.warning-box strong{color:#ff8888}
+.contact-box{background:var(--card);border:1px solid var(--border);padding:28px;margin-top:20px}
+.contact-box h4{font-family:'Syne',sans-serif;font-weight:700;margin-bottom:12px;font-size:0.9rem}
+.contact-box p{font-size:0.85rem;color:#bbb;margin-bottom:6px}
+.contact-box a{color:var(--gold);text-decoration:none}
+
+/* COOKIE BANNER */
+#cookieBanner{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--dark);border-top:1px solid var(--border);
+  padding:20px 48px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  z-index:500;flex-wrap:wrap;
+  transform:translateY(100%);animation:slideUp 0.5s 1s ease both
+}
+@keyframes slideUp{to{transform:translateY(0)}}
+#cookieBanner p{font-size:0.82rem;color:#aaa;flex:1;min-width:200px}
+#cookieBanner a{color:var(--gold);text-decoration:none}
+.cookie-actions{display:flex;gap:10px;flex-shrink:0}
+.cookie-accept{background:var(--gold);color:var(--black);border:none;padding:10px 24px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;cursor:pointer;letter-spacing:0.04em;transition:background 0.2s}
+.cookie-accept:hover{background:#E8C96A}
+.cookie-decline{background:transparent;border:1px solid var(--border);color:var(--muted2);padding:10px 18px;font-size:0.78rem;cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.cookie-decline:hover{border-color:var(--muted);color:var(--white)}
+@media(max-width:600px){#cookieBanner{padding:20px 24px}}
+</style>
+</head>
+<body>
+
+<!-- COOKIE CONSENT BANNER -->
+<div id="cookieBanner">
+  <p>SystemForge AI uses cookies to improve your experience and analyze site usage. By continuing, you agree to our <a href="#cookies">Cookie Policy</a> and <a href="#privacy">Privacy Policy</a>.</p>
+  <div class="cookie-actions">
+    <button class="cookie-decline" onclick="dismissCookie()">Decline</button>
+    <button class="cookie-accept" onclick="acceptCookie()">Accept All</button>
+  </div>
+</div>
+
+<nav>
+  <div class="logo" style="display:flex;align-items:center;gap:9px"><svg width="26" height="26" viewBox="0 0 44 44" fill="none" style="flex-shrink:0"><rect x="2" y="2" width="40" height="40" stroke="#C9A84C" stroke-width="1.5"/><path d="M10 32 L10 18 L22 12 L34 18 L34 32" stroke="#C9A84C" stroke-width="2" fill="none"/><path d="M10 32 L34 32" stroke="#C9A84C" stroke-width="2"/><rect x="8" y="30" width="28" height="4" fill="#C9A84C"/></svg>System<span>Forge</span> AI</div>
+  <a href="/" class="back">← Back to Site</a>
+</nav>
+
+<div class="page-layout">
+
+  <!-- SIDEBAR NAV -->
+  <aside class="legal-nav">
+    <div class="ln-title">Legal Documents</div>
+    <a class="ln-item active" href="#terms">Terms of Service</a>
+    <a class="ln-item" href="#privacy">Privacy Policy</a>
+    <a class="ln-item" href="#refund">Refund & Delivery</a>
+    <a class="ln-item" href="#ai-disclaimer">AI Disclaimer</a>
+    <a class="ln-item" href="#earnings">Earnings Disclaimer</a>
+    <a class="ln-item" href="#cookies">Cookie Policy</a>
+    <a class="ln-item" href="#liability">Limitation of Liability</a>
+    <a class="ln-item" href="#ip">Intellectual Property</a>
+    <a class="ln-item" href="#dispute">Dispute Resolution</a>
+    <a class="ln-item" href="#contact-legal">Contact</a>
+    <div class="ln-updated">Last updated: April 1, 2026<br>Effective: April 1, 2026</div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="legal-content">
+
+    <div class="legal-hero">
+      <div class="legal-hero-tag">Legal Documentation</div>
+      <h1>Policies &amp; Legal Protections</h1>
+      <p>These documents govern your use of SystemForge AI's platform, services, and AI-powered tools. Please read them carefully before using our services or making a purchase.</p>
+      <div class="effective-date">📅 Effective Date: April 1, 2026</div>
+    </div>
+
+    <!-- 01 TERMS OF SERVICE -->
+    <section class="policy-section" id="terms">
+      <div class="policy-section-header">
+        <span class="policy-num">01</span>
+        <h2>Terms of Service</h2>
+      </div>
+
+      <div class="highlight-box"><strong>Plain English Summary:</strong> By using SystemForge AI, you agree to these terms. We provide AI-powered business audits and done-for-you system builds. You pay for a specific deliverable. We deliver it. Neither party makes guarantees about revenue outcomes.</div>
+
+      <h3>1.1 Agreement to Terms</h3>
+      <p>By accessing or using the SystemForge AI website, audit tool, or purchasing any service ("Services"), you ("Client," "User," or "you") agree to be legally bound by these Terms of Service ("Terms"). If you do not agree, do not use our Services.</p>
+      <p>SystemForge AI is operated by SystemForge AI LLC ("Company," "we," "us," or "our"), based in Houston, Texas, United States.</p>
+
+      <h3>1.2 Services Description</h3>
+      <p>SystemForge AI provides the following services:</p>
+      <ul>
+        <li><strong>AI Business Audit Tool</strong> — A free, AI-powered diagnostic tool that analyzes your business operations and identifies potential system gaps. Results are AI-generated estimates, not guaranteed financial projections.</li>
+        <li><strong>Audit Report (Tier 1)</strong> — A written business systems analysis delivered within 24 hours of purchase and intake completion.</li>
+        <li><strong>System Starter (Tier 2)</strong> — Setup and configuration of lead capture, follow-up automation, CRM, and booking systems, delivered within 48–72 hours of purchase and intake completion.</li>
+        <li><strong>Full System Build (Tier 3)</strong> — Comprehensive business systems build including funnel, AI assistant, automations, and onboarding infrastructure, delivered within 5–7 business days of scope agreement.</li>
+      </ul>
+
+      <h3>1.3 Eligibility</h3>
+      <p>You must be at least 18 years of age and legally authorized to enter into contracts in your jurisdiction to use our Services or make a purchase. By purchasing, you represent that you meet these requirements.</p>
+
+      <h3>1.4 Client Responsibilities</h3>
+      <p>You agree to:</p>
+      <ul>
+        <li>Provide accurate, complete, and truthful information in your intake form</li>
+        <li>Respond to build-related questions within 24 hours to avoid delivery delays</li>
+        <li>Provide necessary access credentials (website, existing tools) required to complete your build</li>
+        <li>Accept that delivery timelines begin upon receipt of completed intake, not payment alone</li>
+        <li>Use all delivered systems in compliance with applicable laws and third-party platform terms</li>
+      </ul>
+
+      <h3>1.5 Acceptable Use</h3>
+      <p>You may not use our Services or delivered systems to:</p>
+      <ul>
+        <li>Engage in deceptive, fraudulent, or illegal business practices</li>
+        <li>Spam, harass, or send unsolicited communications in violation of CAN-SPAM or TCPA</li>
+        <li>Violate any third-party platform's terms of service (including but not limited to Meta, Google, Stripe)</li>
+        <li>Resell or redistribute our deliverables as your own without written permission</li>
+        <li>Conduct any activity that violates applicable federal, state, or local laws</li>
+      </ul>
+
+      <h3>1.6 Modifications to Terms</h3>
+      <p>We reserve the right to modify these Terms at any time. Changes will be posted on this page with an updated effective date. Continued use of our Services after changes constitutes acceptance of the revised Terms.</p>
+    </section>
+
+    <!-- 02 PRIVACY POLICY -->
+    <section class="policy-section" id="privacy">
+      <div class="policy-section-header">
+        <span class="policy-num">02</span>
+        <h2>Privacy Policy</h2>
+      </div>
+
+      <div class="highlight-box"><strong>Plain English Summary:</strong> We collect only what we need to serve you. We do not sell your data. Ever. We use industry-standard security. You have the right to request deletion of your data at any time.</div>
+
+      <h3>2.1 Information We Collect</h3>
+      <p>We collect the following categories of information:</p>
+      <ul>
+        <li><strong>Identity Data:</strong> Name, email address, phone number provided during checkout or audit</li>
+        <li><strong>Business Data:</strong> Business name, industry, revenue range, operational information provided in intake forms</li>
+        <li><strong>Transaction Data:</strong> Payment records processed through Stripe (we do not store card numbers — Stripe handles all payment data under PCI-DSS compliance)</li>
+        <li><strong>Usage Data:</strong> Pages visited, audit responses, time on site, browser type, IP address</li>
+        <li><strong>Communications:</strong> Emails, messages, or support requests you send to us</li>
+      </ul>
+
+      <h3>2.2 How We Use Your Information</h3>
+      <ul>
+        <li>To deliver the services you purchased</li>
+        <li>To communicate with you about your order, delivery, and support</li>
+        <li>To send transactional emails (receipts, delivery confirmations, check-ins)</li>
+        <li>To improve our AI audit tool and service quality</li>
+        <li>To comply with legal obligations</li>
+        <li>To send occasional business-relevant updates (you may opt out at any time)</li>
+      </ul>
+
+      <h3>2.3 What We Do NOT Do</h3>
+      <ul>
+        <li>We do not sell, rent, or trade your personal data to third parties</li>
+        <li>We do not use your data to train third-party AI models without explicit consent</li>
+        <li>We do not share your business information with competitors or advertisers</li>
+        <li>We do not store payment card numbers (Stripe handles all payment processing)</li>
+      </ul>
+
+      <h3>2.4 Third-Party Services</h3>
+      <p>We use the following third-party services that may process your data under their own privacy policies:</p>
+      <ul>
+        <li><strong>Stripe</strong> — Payment processing (stripe.com/privacy)</li>
+        <li><strong>Anthropic Claude API</strong> — Powers our AI audit tool (anthropic.com/privacy)</li>
+        <li><strong>Google Analytics</strong> — Site usage analysis (policies.google.com/privacy)</li>
+        <li><strong>Netlify</strong> — Website hosting (netlify.com/privacy)</li>
+      </ul>
+
+      <h3>2.5 Data Retention</h3>
+      <p>We retain your data for as long as necessary to fulfill the services purchased and comply with legal obligations, typically no longer than 3 years after your last transaction. You may request deletion at any time by emailing <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d5a5a7bca3b4b6ac95a6aca6a1b0b8b3baa7b2b0b4bcfbb6bab8">[email&#160;protected]</a>.</p>
+
+      <h3>2.6 Your Rights (CCPA / California Residents)</h3>
+      <p>If you are a California resident, you have the right to:</p>
+      <ul>
+        <li>Know what personal information we collect and how it is used</li>
+        <li>Request deletion of your personal information</li>
+        <li>Opt out of the sale of your personal information (we do not sell data)</li>
+        <li>Non-discrimination for exercising your privacy rights</li>
+      </ul>
+      <p>To exercise these rights, email <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4e3e3c27382f2d370e3d373d3a2b2328213c292b2f27602d2123">[email&#160;protected]</a> with subject line "CCPA Request."</p>
+
+      <h3>2.7 Data Security</h3>
+      <p>We implement industry-standard security measures including SSL/TLS encryption, secure hosting infrastructure, and limited internal access to personal data. However, no method of transmission over the Internet is 100% secure. We cannot guarantee absolute security.</p>
+    </section>
+
+    <!-- 03 REFUND & DELIVERY -->
+    <section class="policy-section" id="refund">
+      <div class="policy-section-header">
+        <span class="policy-num">03</span>
+        <h2>Refund &amp; Delivery Policy</h2>
+      </div>
+
+      <div class="highlight-box"><strong>Plain English Summary:</strong> We stand behind our work. If we miss our delivery window, you get a full refund. If the work is delivered as described and you simply change your mind, refunds are handled on a case-by-case basis within 48 hours of delivery.</div>
+
+      <h3>3.1 Delivery Timelines</h3>
+      <ul>
+        <li><strong>Audit Report (Tier 1):</strong> Delivered within 24 hours of completed intake. Delivery clock starts when intake form is submitted, not at time of payment.</li>
+        <li><strong>System Starter (Tier 2):</strong> Delivered within 48–72 hours of completed intake and any required access credentials.</li>
+        <li><strong>Full System Build (Tier 3):</strong> Delivered within 5–7 business days of scope agreement call. Timeline confirmed in writing before build begins.</li>
+      </ul>
+
+      <h3>3.2 Delivery Guarantee</h3>
+      <p>If SystemForge AI fails to deliver your purchased service within the stated timeframe for reasons within our control, you are entitled to a full refund. This guarantee does not apply if delivery is delayed due to:</p>
+      <ul>
+        <li>Client failure to complete the intake form within 24 hours of purchase</li>
+        <li>Client failure to provide required credentials or access</li>
+        <li>Client unresponsiveness to build-related questions</li>
+        <li>Force majeure events (natural disasters, infrastructure outages, etc.)</li>
+      </ul>
+
+      <h3>3.3 Refund Eligibility</h3>
+      <ul>
+        <li><strong>Full Refund:</strong> Available if we miss our delivery guarantee (see 3.2) or if we are unable to complete the scope of work as described.</li>
+        <li><strong>Partial Refund:</strong> May be issued at our discretion if significant scope changes are requested after work has begun.</li>
+        <li><strong>No Refund:</strong> Once an Audit Report has been delivered, or once a System Starter or Full Build has been delivered and the handoff call has occurred, no refund will be issued solely on the basis of changed circumstances or dissatisfaction with business outcomes.</li>
+      </ul>
+
+      <h3>3.4 How to Request a Refund</h3>
+      <p>Email <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c8bbbdb8b8a7babc88bbb1bbbcada5aea7baafada9a1e6aba7a5">[email&#160;protected]</a> within 48 hours of the missed delivery window or delivery of completed work. Include your order number, name, and reason for the refund request. We will respond within 1 business day. Approved refunds are processed within 5–10 business days through Stripe.</p>
+
+      <h3>3.5 Chargebacks</h3>
+      <p>We ask that you contact us before initiating a chargeback with your bank. Chargebacks filed without contacting us first may result in dispute resolution proceedings and potential restriction from future services.</p>
+    </section>
+
+    <!-- 04 AI DISCLAIMER -->
+    <section class="policy-section" id="ai-disclaimer">
+      <div class="policy-section-header">
+        <span class="policy-num">04</span>
+        <h2>AI Disclaimer</h2>
+      </div>
+
+      <div class="warning-box"><strong>Important:</strong> Our audit tool uses artificial intelligence to generate business analysis. AI-generated content is not a substitute for professional financial, legal, or business consulting advice.</div>
+
+      <h3>4.1 Nature of AI-Generated Audits</h3>
+      <p>SystemForge AI uses large language model (LLM) technology to power our business audit tool. The audit results, revenue leak estimates, system recommendations, and business diagnoses generated by this tool are:</p>
+      <ul>
+        <li>Based on patterns in AI training data and the information you provide</li>
+        <li>Estimates only — not guaranteed financial projections or professional assessments</li>
+        <li>Not reviewed or verified by a licensed accountant, financial advisor, or business consultant</li>
+        <li>Subject to AI hallucination — the AI may occasionally produce inaccurate, incomplete, or inapplicable outputs</li>
+      </ul>
+
+      <h3>4.2 No Professional Advice</h3>
+      <p>Nothing produced by our AI audit tool or our team constitutes:</p>
+      <ul>
+        <li>Legal advice or the formation of an attorney-client relationship</li>
+        <li>Financial or investment advice</li>
+        <li>Accounting or tax guidance</li>
+        <li>Psychological or therapeutic counsel</li>
+      </ul>
+      <p>For decisions involving significant legal, financial, or operational consequences, you should consult qualified licensed professionals in the relevant field.</p>
+
+      <h3>4.3 Accuracy of Revenue Estimates</h3>
+      <p>Dollar amounts shown in audit reports (e.g., "estimated monthly revenue leak of $X") are illustrative estimates based on industry averages and the information you provide. These figures are not audited, verified, or guaranteed. Your actual results will vary based on numerous factors beyond the scope of this tool.</p>
+
+      <h3>4.4 Third-Party AI Provider</h3>
+      <p>Our audit tool is powered by Anthropic's Claude API. By using our audit tool, you acknowledge that your conversation data is processed by Anthropic subject to their Privacy Policy (anthropic.com/privacy). We do not share personally identifiable information with Anthropic beyond what is included in your audit conversation.</p>
+    </section>
+
+    <!-- 05 EARNINGS DISCLAIMER -->
+    <section class="policy-section" id="earnings">
+      <div class="policy-section-header">
+        <span class="policy-num">05</span>
+        <h2>Earnings Disclaimer</h2>
+      </div>
+
+      <div class="warning-box"><strong>Required Disclosure:</strong> Any income figures, revenue recovery estimates, or financial results mentioned on this website are illustrative examples only. They are not guarantees of what you will earn or recover.</div>
+
+      <h3>5.1 No Income Guarantee</h3>
+      <p>SystemForge AI makes no representation that purchasing or using our services will result in any specific financial outcome, revenue increase, lead generation improvement, or business growth. Results depend entirely on factors outside our control including but not limited to:</p>
+      <ul>
+        <li>The quality and consistency of your business operations</li>
+        <li>Market conditions in your industry and geography</li>
+        <li>Your personal effort, skill, and follow-through</li>
+        <li>Economic conditions and consumer behavior</li>
+        <li>The accuracy of information you provide in your intake</li>
+      </ul>
+
+      <h3>5.2 Testimonials and Case Studies</h3>
+      <p>Any testimonials, success stories, or case studies presented on this website represent individual experiences and results. They are not typical results. Individual results will vary significantly. Testimonials are verified to the best of our ability but are not independently audited.</p>
+
+      <h3>5.3 Forward-Looking Statements</h3>
+      <p>Statements on this website about potential revenue recovery, lead conversion improvements, or time savings are forward-looking projections based on industry data and typical outcomes. They are not promises of future performance.</p>
+    </section>
+
+    <!-- 06 COOKIE POLICY -->
+    <section class="policy-section" id="cookies">
+      <div class="policy-section-header">
+        <span class="policy-num">06</span>
+        <h2>Cookie Policy</h2>
+      </div>
+
+      <h3>6.1 What Are Cookies</h3>
+      <p>Cookies are small text files placed on your device when you visit our website. They help us understand how you use our site and improve your experience.</p>
+
+      <h3>6.2 Cookies We Use</h3>
+      <ul>
+        <li><strong>Essential Cookies:</strong> Required for the website to function. Cannot be disabled. Includes session management and security tokens.</li>
+        <li><strong>Analytics Cookies:</strong> Help us understand site traffic and usage patterns (Google Analytics). Can be declined.</li>
+        <li><strong>Preference Cookies:</strong> Remember your settings (e.g., cookie consent). Can be cleared by resetting your browser.</li>
+      </ul>
+
+      <h3>6.3 Managing Cookies</h3>
+      <p>You can control and delete cookies through your browser settings. Declining non-essential cookies will not affect your ability to use our core services. For Google Analytics opt-out, visit tools.google.com/dlpage/gaoptout.</p>
+    </section>
+
+    <!-- 07 LIMITATION OF LIABILITY -->
+    <section class="policy-section" id="liability">
+      <div class="policy-section-header">
+        <span class="policy-num">07</span>
+        <h2>Limitation of Liability</h2>
+      </div>
+
+      <div class="warning-box"><strong>Key Protection:</strong> This section limits our legal exposure. Read it carefully. By purchasing our services, you agree to these limitations.</div>
+
+      <h3>7.1 Disclaimer of Warranties</h3>
+      <p>Our Services are provided "as is" and "as available" without warranties of any kind, express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, or non-infringement.</p>
+      <p>We do not warrant that our Services will be uninterrupted, error-free, or that defects will be corrected. We do not warrant that the AI audit tool will produce accurate, complete, or actionable results for your specific business.</p>
+
+      <h3>7.2 Cap on Damages</h3>
+      <p>To the maximum extent permitted by applicable law, SystemForge AI's total liability to you for any claims arising from or related to these Terms or our Services shall not exceed the total amount paid by you to SystemForge AI in the twelve (12) months preceding the claim.</p>
+
+      <h3>7.3 Exclusion of Consequential Damages</h3>
+      <p>In no event shall SystemForge AI be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, loss of data, loss of goodwill, business interruption, or any other commercial damages or losses, even if we have been advised of the possibility of such damages.</p>
+
+      <h3>7.4 Third-Party Tools</h3>
+      <p>SystemForge AI is not responsible for the performance, downtime, pricing changes, or policy changes of any third-party tools or platforms we recommend or configure on your behalf, including but not limited to GoHighLevel, Zapier, Stripe, Calendly, or any CRM platform.</p>
+    </section>
+
+    <!-- 08 INTELLECTUAL PROPERTY -->
+    <section class="policy-section" id="ip">
+      <div class="policy-section-header">
+        <span class="policy-num">08</span>
+        <h2>Intellectual Property</h2>
+      </div>
+
+      <h3>8.1 Our Property</h3>
+      <p>All content on the SystemForge AI website — including but not limited to text, graphics, logos, audit tool design, playbook content, scripts, methodologies, and code — is the intellectual property of SystemForge AI LLC and is protected by United States copyright law.</p>
+      <p>You may not copy, reproduce, distribute, publish, or create derivative works from any of our content without express written permission.</p>
+
+      <h3>8.2 Your Delivered Systems</h3>
+      <p>Upon full payment and delivery, you own the systems, automations, and configurations built specifically for your business. You do not own the underlying methodology, templates, or frameworks used to create them.</p>
+
+      <h3>8.3 Feedback License</h3>
+      <p>If you submit feedback, suggestions, or ideas about our Services, you grant us a non-exclusive, royalty-free, perpetual license to use that feedback to improve our products without any obligation of compensation to you.</p>
+
+      <h3>8.4 Brand Usage</h3>
+      <p>You may not use the SystemForge AI name, logo, or branding in any context that implies endorsement, partnership, or affiliation without our express written consent.</p>
+    </section>
+
+    <!-- 09 DISPUTE RESOLUTION -->
+    <section class="policy-section" id="dispute">
+      <div class="policy-section-header">
+        <span class="policy-num">09</span>
+        <h2>Dispute Resolution</h2>
+      </div>
+
+      <div class="highlight-box"><strong>Plain English Summary:</strong> If we have a disagreement, we try to work it out directly first. If that fails, disputes go to binding arbitration in Houston, Texas — not a courtroom. This protects both parties from expensive litigation.</div>
+
+      <h3>9.1 Informal Resolution First</h3>
+      <p>Before initiating any formal dispute process, you agree to contact us at <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="80f3f5f0f0eff2f4c0f3f9f3f4e5ede6eff2e7e5e1e9aee3efed">[email&#160;protected]</a> and attempt to resolve the dispute informally. We will make a good-faith effort to resolve any issue within 10 business days.</p>
+
+      <h3>9.2 Binding Arbitration</h3>
+      <p>If informal resolution fails, any dispute, claim, or controversy arising out of or relating to these Terms or our Services shall be settled by binding arbitration administered by the American Arbitration Association (AAA) under its Commercial Arbitration Rules.</p>
+      <ul>
+        <li>Arbitration shall take place in Houston, Texas</li>
+        <li>The arbitration shall be conducted in English</li>
+        <li>The arbitrator's decision shall be final and binding</li>
+        <li>Each party bears their own arbitration costs unless the arbitrator determines otherwise</li>
+      </ul>
+
+      <h3>9.3 Class Action Waiver</h3>
+      <p>You agree that any dispute resolution proceedings will be conducted on an individual basis only. You waive any right to participate in a class action lawsuit or class-wide arbitration against SystemForge AI.</p>
+
+      <h3>9.4 Governing Law</h3>
+      <p>These Terms are governed by the laws of the State of Texas, without regard to conflict of law principles. Any matters not subject to arbitration shall be resolved in the state or federal courts located in Harris County, Texas.</p>
+
+      <h3>9.5 Statute of Limitations</h3>
+      <p>Any claim arising from your use of our Services must be filed within one (1) year of the date the cause of action arose, regardless of any statute of limitations to the contrary.</p>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="policy-section" id="contact-legal">
+      <div class="policy-section-header">
+        <span class="policy-num">10</span>
+        <h2>Legal Contact</h2>
+      </div>
+
+      <p>For any questions, concerns, or requests related to these legal documents, contact us at:</p>
+
+      <div class="contact-box">
+        <h4>SystemForge AI LLC</h4>
+        <p>📍 Houston, Texas, United States</p>
+        <p>📧 Legal: <a href="/cdn-cgi/l/email-protection#94f8f1f3f5f8d4e7ede7e0f1f9f2fbe6f3f1f5fdbaf7fbf9"><span class="__cf_email__" data-cfemail="2f434a484e436f5c565c5b4a4249405d484a4e46014c4042">[email&#160;protected]</span></a></p>
+        <p>📧 Privacy: <a href="/cdn-cgi/l/email-protection#84f4f6edf2e5e7fdc4f7fdf7f0e1e9e2ebf6e3e1e5edaae7ebe9"><span class="__cf_email__" data-cfemail="1c6c6e756a7d7f655c6f656f6879717a736e7b797d75327f7371">[email&#160;protected]</span></a></p>
+        <p>📧 Support: <a href="/cdn-cgi/l/email-protection#ccbfb9bcbca3beb88cbfb5bfb8a9a1aaa3beaba9ada5e2afa3a1"><span class="__cf_email__" data-cfemail="97e4e2e7e7f8e5e3d7e4eee4e3f2faf1f8e5f0f2f6feb9f4f8fa">[email&#160;protected]</span></a></p>
+        <p style="margin-top:16px;font-size:0.78rem;color:var(--muted)">Response time: 1–2 business days for legal inquiries, same day for support.</p>
+      </div>
+
+      <div class="highlight-box" style="margin-top:24px">
+        <strong>Attorney Notice:</strong> These policies were drafted with standard legal frameworks for U.S.-based digital service businesses. We strongly recommend having a licensed attorney in your jurisdiction review these documents before you launch publicly, particularly the arbitration clause and e

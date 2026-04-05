@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SystemForge AI — Checkout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0A0A0A;--dark:#111;--card:#161616;--border:#252525;
+  --gold:#C9A84C;--gold-light:#E8C96A;--gold-dim:rgba(201,168,76,0.12);
+  --white:#F5F0E8;--muted:#777;--red:#FF4444;--green:#4CAF78;
+}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.3}
+h1,h2,h3,h4{font-family:'Syne',sans-serif}
+
+/* NAV */
+nav{padding:20px 48px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem}
+.logo span{color:var(--gold)}
+.back-link{font-size:0.82rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.back-link:hover{color:var(--white)}
+
+/* LAYOUT */
+.page{display:grid;grid-template-columns:1fr 420px;min-height:calc(100vh - 65px)}
+@media(max-width:900px){.page{grid-template-columns:1fr}}
+
+/* LEFT — STEPS */
+.left-panel{padding:60px 48px;border-right:1px solid var(--border)}
+@media(max-width:900px){.left-panel{padding:40px 24px;border-right:none;border-bottom:1px solid var(--border)}}
+
+/* TIER SELECTOR */
+.tier-select-label{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.tier-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:40px}
+.tier-card{
+  border:1px solid var(--border);padding:20px 24px;cursor:pointer;
+  display:flex;align-items:center;gap:20px;transition:all 0.2s;position:relative
+}
+.tier-card:hover{border-color:rgba(201,168,76,0.4)}
+.tier-card.selected{border-color:var(--gold);background:var(--gold-dim)}
+.tier-card.selected::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold)}
+.tier-radio{width:18px;height:18px;border:2px solid var(--border);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s}
+.tier-card.selected .tier-radio{border-color:var(--gold)}
+.tier-radio-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);display:none}
+.tier-card.selected .tier-radio-dot{display:block}
+.tier-info{flex:1}
+.tier-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:3px}
+.tier-desc{font-size:0.78rem;color:var(--muted);line-height:1.4}
+.tier-price{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:var(--gold);flex-shrink:0}
+
+/* INTAKE FORM */
+.form-section{margin-bottom:36px}
+.form-section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.form-section-num{background:var(--gold);color:var(--black);width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:0.72rem;color:var(--muted);margin-bottom:8px;letter-spacing:0.06em;text-transform:uppercase}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;background:var(--dark);border:1px solid var(--border);
+  color:var(--white);padding:12px 14px;font-family:'DM Sans',sans-serif;
+  font-size:0.88rem;outline:none;transition:border-color 0.2s;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold)}
+.form-group input::placeholder,.form-group textarea::placeholder{color:#444}
+.form-group select{appearance:none;cursor:pointer}
+.form-group select option{background:var(--dark)}
+.form-group textarea{resize:vertical;min-height:90px;line-height:1.5}
+.checkbox-group{display:flex;flex-direction:column;gap:10px}
+.checkbox-item{display:flex;align-items:flex-start;gap:12px;cursor:pointer}
+.checkbox-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--gold);margin-top:2px;flex-shrink:0;cursor:pointer}
+.checkbox-label{font-size:0.85rem;color:#bbb;line-height:1.4}
+
+/* DYNAMIC SECTIONS */
+.dynamic-section{display:none}
+.dynamic-section.visible{display:block}
+
+/* RIGHT — ORDER SUMMARY */
+.right-panel{padding:60px 40px;background:var(--dark);position:sticky;top:0;height:fit-content}
+@media(max-width:900px){.right-panel{padding:40px 24px;position:relative}}
+.summary-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;margin-bottom:28px;letter-spacing:0.02em}
+.summary-tier{background:var(--card);border:1px solid var(--border);padding:20px;margin-bottom:20px}
+.summary-tier-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:6px}
+.summary-tier-items{list-style:none}
+.summary-tier-items li{font-size:0.78rem;color:#888;padding:4px 0;display:flex;gap:8px}
+.summary-tier-items li::before{content:'→';color:var(--gold);flex-shrink:0}
+.summary-divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+.summary-line{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:0.85rem}
+.summary-line.total{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-top:16px;color:var(--gold)}
+.summary-line.muted{color:var(--muted);font-size:0.78rem}
+.guarantee-box{background:rgba(76,175,120,0.08);border:1px solid rgba(76,175,120,0.2);padding:16px;margin:20px 0}
+.guarantee-box p{font-size:0.78rem;color:#aaa;line-height:1.5}
+.guarantee-box strong{color:var(--green)}
+.submit-btn{
+  width:100%;background:var(--gold);color:var(--black);border:none;
+  padding:16px;font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;
+  cursor:pointer;letter-spacing:0.02em;transition:all 0.2s;margin-top:8px
+}
+.submit-btn:hover{background:var(--gold-light);transform:translateY(-1px)}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.secure-note{text-align:center;font-size:0.72rem;color:var(--muted);margin-top:12px;display:flex;align-items:center;justify-content:center;gap:6px}
+.timeline-box{background:var(--card);border:1px solid var(--border);padding:20px;margin-top:20px}
+.timeline-title{font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.timeline-steps{display:flex;flex-direction:column;gap:10px}
+.timeline-step{display:flex;gap:12px;align-items:flex-start}
+.timeline-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;margin-top:5px;flex-shrink:0}
+.timeline-step-text{font-size:0.78rem;color:#aaa;line-height:1.4}
+.timeline-step-text strong{color:var(--white)}
+
+/* SUCCESS STATE */
+.success-screen{display:none;text-align:center;padding:80px 48px;max-width:600px;margin:0 auto;animation:fadeUp 0.5s ease both}
+.success-screen.visible{display:block}
+.success-icon{font-size:3rem;margin-bottom:24px}
+.success-screen h2{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;margin-bottom:16px;letter-spacing:-0.02em}
+.success-screen p{color:#888;line-height:1.7;margin-bottom:32px}
+.success-next{background:var(--card);border:1px solid var(--border);padding:28px;text-align:left;margin-bottom:24px}
+.success-next-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:14px;color:var(--gold)}
+.success-step{display:flex;gap:12px;margin-bottom:10px;font-size:0.85rem;color:#bbb;line-height:1.4}
+.success-step-num{background:var(--gold);color:var(--black);width:20px;height:20px;font-size:0.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" style="display:flex;align-items:center;gap:9px"><svg width="26" height="26" viewBox="0 0 44 44" fill="none" style="flex-shrink:0"><rect x="2" y="2" width="40" height="40" stroke="#C9A84C" stroke-width="1.5"/><path d="M10 32 L10 18 L22 12 L34 18 L34 32" stroke="#C9A84C" stroke-width="2" fill="none"/><path d="M10 32 L34 32" stroke="#C9A84C" stroke-width="2"/><rect x="8" y="30" width="28" height="4" fill="#C9A84C"/></svg>System<span>Forge</span> AI</div>
+  <a href="/" class="back-link">← Back to site</a>
+</nav>
+
+<!-- MAIN CHECKOUT -->
+<div id="checkoutPage">
+<div class="page">
+
+  <!-- LEFT -->
+  <div class="left-panel">
+
+    <!-- TIER SELECTOR -->
+    <div class="tier-select-label">Select Your Package</div>
+    <div class="tier-cards">
+      <div class="tier-card" id="tier1" onclick="selectTier(1)">
+        <div class="tier-radio"><div class="tier-radio-dot"></div></div>
+        <div class="tier-info">
+          <div class="tier-name">Audit Report</div>
+          <div class="tier-desc">Full written breakdown + revenue leak report + 30-min call. Delivered in 24 hrs.</div>
+        </div>
+        <div class="tier-price">$97</div>
+      </div>
+      <div class="tier-card selected" id="tier2" onclick="selectTier(2)">
+        <div class="tier-radio"><div class="tier-radio-dot"></div></div>
+        <div class="tier-info">
+          <div class="tier-name">System Starter ★ Most Popular</div>
+          <div class="tier-desc">Lead capture + follow-up automation + CRM + booking system. Built in 48–72 hrs.</div>
+        </div>
+        <div class="tier-price">$750</div>
+      </div>
+      <div class="tier-card" id="tier3" onclick="selectTier(3)">
+        <div class="tier-radio"><div class="tier-radio-dot"></div></div>
+        <div class="tier-info">
+          <div class="tier-name">Full System Build</div>
+          <div class="tier-desc">Complete backend: funnel, AI assistant, automations, onboarding, retention. 5–7 days.</div>
+        </div>
+        <div class="tier-price">$2,500</div>
+      </div>
+    </div>
+
+    <!-- SECTION 1: CONTACT -->
+    <div class="form-section">
+      <div class="form-section-title"><div class="form-section-num">1</div> Your Info</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" id="firstName" placeholder="Marcus">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" id="lastName" placeholder="Thompson">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder="you@business.com">
+        </div>
+        <div class="form-group">
+          <label>Phone / WhatsApp</label>
+          <input type="tel" id="phone" placeholder="+1 (713) 000-0000">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: BUSINESS INFO -->
+    <div class="form-section">
+      <div class="form-section-title"><div class="form-section-num">2</div> Your Business</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Business Name</label>
+          <input type="text" id="bizName" placeholder="Your Business Name">
+        </div>
+        <div class="form-group">
+          <label>Industry / Type</label>
+          <select id="industry">
+            <option value="">Select industry...</option>
+            <option>Barbershop / Salon</option>
+            <option>Personal Training / Fitness</option>
+            <option>Real Estate</option>
+            <option>Consulting / Coaching</option>
+            <option>Restaurant / Food Service</option>
+            <option>Contractor / Home Services</option>
+            <option>Healthcare / Wellness / Med Spa</option>
+            <option>Retail / E-commerce</option>
+            <option>Auto / Detailing</option>
+            <option>Legal / Professional Services</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>City / State</label>
+          <input type="text" id="location" placeholder="Houston, TX">
+        </div>
+        <div class="form-group">
+          <label>Monthly Revenue (approx.)</label>
+          <select id="revenue">
+            <option value="">Select range...</option>
+            <option>Under $3,000/mo</option>
+            <option>$3K – $10K/mo</option>
+            <option>$10K – $30K/mo</option>
+            <option>$30K – $100K/mo</option>
+            <option>Over $100K/mo</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Website / Social (if any)</label>
+        <input type="text" id="website" placeholder="instagram.com/yourbiz or yoursite.com">
+      </div>
+    </div>
+
+    <!-- SECTION 3: PAIN POINTS (shown for tier 2 + 3) -->
+    <div class="form-section dynamic-section visible" id="painSection">
+      <div class="form-section-title"><div class="form-section-num">3</div> What's Broken</div>
+      <div class="form-group">
+        <label>Which of these are currently a problem? (check all that apply)</label>
+        <div class="checkbox-group" style="margin-top:8px">
+          <label class="checkbox-item">
+            <input type="checkbox" value="no-lead-capture"> <span class="checkbox-label">No system to capture leads — people inquire and disappear</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" value="no-followup"> <span class="checkbox-label">No automated follow-up — I follow up manually or not at all</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" value="no-crm"> <span class="checkbox-label">No CRM — contacts and notes are scattered (phone, notes app, head)</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" value="no-booking"> <span class="checkbox-label">Broken booking flow — too much back-and-forth to schedule</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" value="manual-onboarding"> <span class="checkbox-label">Manual onboarding — I walk every new client through the same steps</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" value="no-retention"> <span class="checkbox-label">No retention system — I don't have a way to bring past clients back</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Describe your biggest operational headache right now</label>
+        <textarea id="painDesc" placeholder="E.g. 'I spend 3 hours a day answering the same questions in DMs and half of them never book...'"></textarea>
+      </div>
+    </div>
+
+    <!-- SECTION 4: TOOLS + CONTEXT (tier 2 + 3 only) -->
+    <div class="form-section dynamic-section visible" id="toolsSection">
+      <div class="form-section-title"><div class="form-section-num">4</div> Current Setup</div>
+      <div class="form-group">
+        <label>Tools you currently use (check all that apply)</label>
+        <div class="checkbox-group" style="margin-top:8px">
+          <label class="checkbox-item"><input type="checkbox" value="instagram"> <span class="checkbox-label">Instagram / Facebook (main communication channel)</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="google"> <span class="checkbox-label">Google Business / Google Calendar</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="square"> <span class="checkbox-label">Square / Clover (point of sale)</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="calendly"> <span class="checkbox-label">Calendly or similar booking tool</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="mailchimp"> <span class="checkbox-label">Mailchimp / email marketing tool</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="none"> <span class="checkbox-label">None — everything is manual</span></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Goal — What does success look like in 90 days?</label>
+        <textarea id="goalDesc" placeholder="E.g. 'I want to stop losing leads, have clients book without calling me, and free up 10 hours a week...'"></textarea>
+      </div>
+    </div>
+
+    <!-- SECTION 5: FULL BUILD EXTRA (tier 3 only) -->
+    <div class="form-section dynamic-section" id="fullBuildSection">
+      <div class="form-section-title"><div class="form-section-num">5</div> Full Build Details</div>
+      <div class="form-group">
+        <label>Approximate number of active clients / customers</label>
+        <select id="clientCount">
+          <option value="">Select...</option>
+          <option>Under 20</option>
+          <option>20–100</option>
+          <option>100–500</option>
+          <option>500+</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Do you have existing branding? (logo, colors, domain)</label>
+        <select id="branding">
+          <option value="">Select...</option>
+          <option>Yes — full branding exists</option>
+          <option>Partial — logo only</option>
+          <option>No — starting fresh</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Anything else we should know before we start?</label>
+        <textarea id="extraNotes" placeholder="Team size, specific integrations needed, timeline constraints..."></textarea>
+      </div>
+    </div>
+
+    <!-- PAYMENT — REAL STRIPE ELEMENTS -->
+    <div class="form-section">
+      <div class="form-section-title"><div class="form-section-num" id="paymentStepNum">5</div> Payment</div>
+      <div style="background:var(--dark);border:1px solid var(--border);padding:24px;margin-bottom:16px">
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:16px;letter-spacing:0.06em;text-transform:uppercase">Stripe Secure Checkout</div>
+        <!-- Stripe Card Element mounts here -->
+        <div id="stripe-card-element" style="background:var(--black);border:1px solid var(--border);padding:14px 14px;margin-bottom:12px;min-height:44px;transition:border-color 0.2s"></div>
+        <div id="stripe-card-errors" style="color:var(--red-alert);font-size:0.78rem;min-height:18px;margin-bottom:4px"></div>
+        <div style="margin-top:10px;font-size:0.75rem;color:#555;display:flex;align-items:center;gap:6px">
+          🔒 256-bit SSL · Powered by Stripe · Card data never touches our servers
+        </div>
+      </div>
+      <!-- Hidden field stores PaymentIntent client secret from server -->
+      <input type="hidden" id="paymentIntentClientSecret">
+    </div>
+
+  </div>
+
+  <!-- RIGHT SUMMARY -->
+  <div class="right-panel">
+    <div class="summary-title">Order Summary</div>
+
+    <div class="summary-tier" id="summaryBox">
+      <div class="summary-tier-name" id="summaryName">System Starter</div>
+      <ul class="summary-tier-items" id="summaryItems">
+        <li>Lead capture system</li>
+        <li>Follow-up automation (3–5 emails/SMS)</li>
+        <li>CRM setup with pipeline</li>
+        <li>Booking system integration</li>
+        <li>60-min handoff call</li>
+      </ul>
+    </div>
+
+    <hr class="summary-divider">
+    <div class="summary-line muted"><span>Subtotal</span><span id="subtotalAmt">$750</span></div>
+    <div class="summary-line muted"><span>Setup fee</span><span>$0</span></div>
+    <div class="summary-line muted"><span>Monthly retainer</span><span>None — one time</span></div>
+    <div class="summary-line total"><span>Total Today</span><span id="totalAmt">$750</span></div>
+
+    <div class="guarantee-box">
+      <p><strong>48-Hour Delivery Guarantee</strong><br>
+      If we don't deliver your system within the promised timeframe, you get a full refund. No questions asked.</p>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitOrder()">
+      Complete Order → <span id="btnPrice">$750</span>
+    </button>
+    <div class="secure-note">🔒 Secure checkout · Cancel anytime</div>
+
+    <div class="timeline-box">
+      <div class="timeline-title">What happens next</div>
+      <div class="timeline-steps" id="timelineSteps">
+        <div class="timeline-step"><div class="timeline-dot"></div><div class="timeline-step-text"><strong>Immediately:</strong> Confirmation email + intake review</div></div>
+        <div class="timeline-step"><div class="timeline-dot"></div><div class="timeline-step-text"><strong>Within 2 hrs:</strong> We review your intake and begin build</div></div>
+        <div class="timeline-step"><div class="timeline-dot"></div><div class="timeline-step-text"><strong>48–72 hrs:</strong> Systems delivered + handoff call scheduled</div></div>
+        <div class="timeline-step"><div class="timeline-dot"></div><div class="timeline-step-text"><strong>Day 7:</strong> Check-in to confirm everything is running</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">✓</div>
+  <h2>You're in. Let's build.</h2>
+  <p>Your order is confirmed. Check your email for a receipt and next steps.<br>We'll be in touch within 2 hours.</p>
+
+  <div class="success-next">
+    <div class="success-next-title">Here's exactly what happens next</div>
+    <div class="success-step"><div class="success-step-num">1</div><span>You'll receive a confirmation email with your order details and a link to this intake form for reference.</span></div>
+    <div class="success-step"><div class="success-step-num">2</div><span>Our team reviews your intake within 2 hours and assigns your build. No action needed from you.</span></div>
+    <div class="success-step"><div class="success-step-num">3</div><span id="successStep3">Your systems will be delivered within 48–72 hours. You'll get a Loom video walkthrough and a handoff call link.</span></div>
+    <div class="success-step"><div class="success-step-num">4</div><span>You review, approve, and flip the switch. Systems go live. Money starts moving.</span></div>
+  </div>
+
+  <a href="/" style="display:inline-block;color:var(--muted);font-size:0.85rem;text-decoration:none">← Back to SystemForge AI</a>
+</div>
+
+<script>
+// ── SUPABASE DATA CAPTURE ──────────────────────────────────
+const SF_URL = 'YOUR_SUPABASE_URL';
+const SF_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SF_SESSION = crypto.randomUUID();
+async function sfSave(table, data) {
+  if (SF_URL === 'YOUR_SUPABASE_URL') return;
+  try {
+    await fetch(`${SF_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: { 'apikey': SF_KEY, 'Authorization': `Bearer ${SF_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify(data)
+    });
+  } catch(e) { console.warn('SF:', e); }
+}
+sfSave('page_events', { event_type: 'page_view', page: 'checkout', session_id: SF_SESSION });
+// ──────────────────────────────────────────────────────────
+
+const tiers = {
+  1: {
+    name: 'Audit Report',
+    price: 97,
+    items: ['AI-powered business audit','Revenue leak calculation','Prioritized fix roadmap','Tool recommendations','30-min strategy call'],
+    timeline: [
+      {t:'Immediately',d:'Confirmation email sent'},
+      {t:'Within 4 hrs',d:'Audit review begins'},
+      {t:'Within 24 hrs',d:'Written report delivered to your email'},
+      {t:'Day 2',d:'30-min strategy call to walk through findings'}
+    ],
+    successStep3: 'Your written audit report will be delivered within 24 hours with a 30-min call link to review findings.'
+  },
+  2: {
+    name: 'System Starter',
+    price: 750,
+    items: ['Lead capture system','Follow-up automation (3–5 emails/SMS)','CRM setup with pipeline','Booking system integration','60-min handoff call'],
+    timeline: [
+      {t:'Immediately',d:'Confirmation email + intake review'},
+      {t:'Within 2 hrs',d:'We review your intake and begin build'},
+      {t:'48–72 hrs',d:'Systems delivered + handoff call scheduled'},
+      {t:'Day 7',d:'Check-in to confirm everything is running'}
+    ],
+    successStep3: 'Your systems will be delivered within 48–72 hours. You\'ll get a Loom video walkthrough and a handoff call link.'
+  },
+  3: {
+    name: 'Full System Build',
+    price: 2500,
+    items: ['Full sales funnel','AI chat assistant (trained on your biz)','Client onboarding automation','Retention + re-engagement system','Analytics dashboard','30 days of support'],
+    timeline: [
+      {t:'Within 2 hrs',d:'Discovery call scheduled to align on scope'},
+      {t:'Day 1–2',d:'Architecture and toolstack finalized'},
+      {t:'Day 3–7',d:'Build phase — daily progress updates'},
+      {t:'Day 7',d:'Full delivery + walkthrough + 30-day support begins'}
+    ],
+    successStep3: 'We\'ll schedule a 30-min discovery call within 2 hours to align on scope. Full build delivered in 5–7 days.'
+  }
+};
+
+let selectedTier = 2;
+
+function selectTier(n) {
+  selectedTier = n;
+  [1,2,3].forEach(i => document.getElementById('tier'+i).classList.toggle('selected', i===n));
+
+  const t = tiers[n];
+  document.getElementById('summaryName').textContent = t.name;
+  document.getElementById('summaryItems').innerHTML = t.items.map(i=>`<li>${i}</li>`).join('');
+  document.getElementById('subtotalAmt').textContent = '$'+t.price.toLocaleString();
+  document.getElementById('totalAmt').textContent = '$'+t.price.toLocaleString();
+  document.getElementById('btnPrice').textContent = '$'+t.price.toLocaleString();
+
+  // Timeline
+  document.getElementById('timelineSteps').innerHTML = t.timeline.map(s =>
+    `<div class="timeline-step"><div class="timeline-dot"></div><div class="timeline-step-text"><strong>${s.t}:</strong> ${s.d}</div></div>`
+  ).join('');
+
+  // Dynamic sections
+  const showPain = n >= 2;
+  const showFull = n === 3;
+  document.getElementById('painSection').classList.toggle('visible', showPain);
+  document.getElementById('toolsSection').classList.toggle('visible', showPain);
+  document.getElementById('fullBuildSection').classList.toggle('visible', showFull);
+  document.getElementById('paymentStepNum').textContent = n === 3 ? '6' : n === 2 ? '5' : '3';
+}
+
+function formatCard(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,16);
+  el.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+
+function formatExpiry(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,4);
+  if(v.length>=2) v = v.substring(0,2)+' / '+v.substring(2);
+  el.value = v;
+}
+
+async function submitOrder() {
+  const btn = document.getElementById('submitBtn');
+  const consent = document.getElementById('legalConsent');
+  const required = ['firstName','lastName','email','phone','bizName','industry'];
+  let valid = true;
+  required.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.style.borderColor='var(--red)'; valid=false; }
+    else el.style.borderColor='var(--border)';
+  });
+  if (!valid) { alert('Please fill in all required fields.'); return; }
+  if (consent && !consent.checked) {
+    consent.parentElement.style.border = '1px solid #FF4444';
+    consent.parentElement.style.padding = '8px';
+    alert('Please agree to the Terms of Service to continue.');
+    return;
+  }
+  if (!stripeCardElement) { alert('Payment form not loaded. Please refresh the page.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
+  // ── COLLECT INTAKE DATA ──
+  const painPoints = [...document.querySelectorAll('input[type=checkbox]:checked')]
+    .filter(cb => ['no-lead-capture','no-followup','no-crm','no-booking','manual-onboarding','no-retention'].includes(cb.value))
+    .map(cb => cb.value);
+  const toolsUsed = [...document.querySelectorAll('input[type=checkbox]:checked')]
+    .filter(cb => ['instagram','google','square','calendly','mailchimp','none'].includes(cb.value))
+    .map(cb => cb.value);
+  const t = tiers[selectedTier];
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName  = document.getElementById('lastName').value.trim();
+  const email     = document.getElementById('email').value.trim();
+
+  const submission = {
+    session_id: SF_SESSION, first_name: firstName, last_name: lastName,
+    email, phone: document.getElementById('phone').value,
+    business_name: document.getElementById('bizName').value,
+    industry: document.getElementById('industry').value,
+    location: document.getElementById('location')?.value || '',
+    revenue_range: document.getElementById('revenue')?.value || '',
+    website: document.getElementById('website')?.value || '',
+    pain_points: painPoints, pain_desc: document.getElementById('painDesc')?.value || '',
+    tools_used: toolsUsed, goal_desc: document.getElementById('goalDesc')?.value || '',
+    tier_selected: selectedTier, tier_name: t.name,
+    amount: t.price * 100, payment_status: 'pending',
+    consented_to_terms: consent?.checked || false
+  };
+
+  // ── SAVE INTAKE DATA TO SUPABASE IMMEDIATELY ──
+  await sfSave('checkout_submissions', submission);
+  sfSave('page_events', { event_type: 'checkout_submit', page: 'checkout', detail: t.name, session_id: SF_SESSION });
+
+  try {
+    // ── STEP 1: GET PAYMENT INTENT FROM SERVER ──
+    const piResponse = await fetch('/api/payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tierName: t.name,
+        amount: t.price * 100,
+        customerEmail: email,
+        customerName: `${firstName} ${lastName}`,
+        businessName: document.getElementById('bizName').value,
+        metadata: { tier: String(selectedTier), session_id: SF_SESSION }
+      })
+    });
+
+    const piData = await piResponse.json();
+    if (!piResponse.ok || !piData.clientSecret) {
+      throw new Error(piData.error || 'Could not create payment. Please try again.');
+    }
+
+    // ── STEP 2: CONFIRM CARD PAYMENT WITH STRIPE.JS ──
+    btn.textContent = 'Confirming payment...';
+    const { error, paymentIntent } = await stripe.confirmCardPayment(piData.clientSecret, {
+      payment_method: {
+        card: stripeCardElement,
+        billing_details: { name: `${firstName} ${lastName}`, email }
+      }
+    });
+
+    if (error) {
+      // Show error to user — Stripe provides human-readable messages
+      document.getElementById('stripe-card-errors').textContent = error.message;
+      btn.disabled = false;
+      btn.textContent = `Complete Order → $${t.price.toLocaleString()}`;
+      return;
+    }
+
+    // ── STEP 3: PAYMENT SUCCEEDED ──
+    // Stripe webhook also fires — this is belt-and-suspenders
+    sfSave('page_events', {
+      event_type: 'payment_success', page: 'checkout',
+      detail: `${t.name}:${paymentIntent.id}`, session_id: SF_SESSION
+    });
+
+    // Show success screen
+    document.getElementById('checkoutPage').style.display = 'none';
+    const s = document.getElementById('successScreen');
+    s.classList.add('visible');
+    document.getElementById('successStep3').textContent = tiers[selectedTier].successStep3;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch (err) {
+    document.getElementById('stripe-card-errors').textContent = err.message || 'Payment failed. Please try again.';
+    btn.disabled = false;
+    btn.textContent = `Complete Order → $${t.price.toLocaleString()}`;
+  }
+}
+
+
+// Init
+selectTier(2);
+</script>
+
+<!-- Stripe.js — loads securely from Stripe's CDN -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+// ── STRIPE INITIALIZATION ─────────────────────────────────────
+// STRIPE_PUBLISHABLE_KEY is the ONLY key that is safe in client HTML
+// It identifies your account but cannot make charges by itself
+const STRIPE_PK = 'pk_live_YOUR_STRIPE_PUBLISHABLE_KEY'; // ← Replace this
+let stripe = null;
+let stripeCardElement = null;
+
+function initStripe() {
+  if (!STRIPE_PK || STRIPE_PK.includes('YOUR_STRIPE')) {
+    // Development mode — show a notice instead of crashing
+    document.getElementById('stripe-card-element').innerHTML =
+      '<div style="font-size:0.78rem;color:var(--muted2);padding:4px 0">⚠️ Add your Stripe Publishable Key to activate payments</div>';
+    return;
+  }
+
+  stripe = Stripe(STRIPE_PK);
+  const elements = stripe.elements({
+    appearance: {
+      theme: 'night',
+      variables: {
+        colorPrimary: '#C9A84C',
+        colorBackground: '#0A0A0A',
+        colorText: '#F5F0E8',
+        colorDanger: '#FF4444',
+        fontFamily: 'DM Sans, sans-serif',
+        borderRadius: '0px',
+        spacingUnit: '4px'
+      }
+    }
+  });
+
+  stripeCardElement = elements.create('card', {
+    style: {
+      base: {
+        color: '#F5F0E8',
+        fontFamily: '"DM Sans", sans-serif',
+        fontSize: '14px',
+        '::placeholder': { color: '#555' }
+      },
+      invalid: { color: '#FF4444' }
+    }
+  });
+
+  stripeCardElement.mount('#stripe-card-element');
+
+  // Style the element container on focus
+  stripeCardElement.on('focus', () => {
+    document.getElementById('stripe-card-element').style.borderColor = '#C9A84C';
+  });
+  stripeCardElement.on('blur', () => {
+    document.getElementById('stripe-card-element').style.borderColor = 'var(--border)';
+  });
+
+  // Show real-time card errors
+  stripeCardElement.on('change', (event) => {
+    const display = document.getElementById('stripe-card-errors');
+    display.textContent = event.error ? event.error.message : '';
+  });
+}
+
+// Initialize Stripe when page loads
+document.addEventListener('DOMContentLoaded', initStripe);
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const submitBtn = document.getElementById('submitBtn');
+  if (!submitBtn || document.getElementById('legalConsent')) return;
+
+  const consentDiv = document.createElement('div');
+  consentDiv.style.cssText = 'margin-bottom:14px;display:flex;align-items:flex-start;gap:10px;margin-top:16px';
+  consentDiv.innerHTML = '<input type="checkbox" id="legalConsent" style="margin-top:3px;accent-color:#C9A84C;flex-shrink:0;width:16px;height:16px"><label for="legalConsent" style="font-size:0.76rem;color:#777;line-height:1.5;font-family:DM Sans,sans-serif">I agree to the <a href="/legal/legal.html#terms" style="color:#C9A84C;text-decoration:none">Terms of Service</a>, <a href="/legal/legal.html#privacy" style="color:#C9A84C;text-decoration:none">Privacy Policy</a>, <a href="/legal/legal.html#refund" style="color:#C9A84C;text-decoration:none">Refund Policy</a>, and <a href="/legal/legal.html#earnings" style="color:#C9A84C;text-decoration:none">Earnings Disclaimer</a>. I understand that results are not guaranteed and that AI-generated audit content is for informational purposes only.</label>';
+  submitBtn.parentNode.insertBefore(consentDiv, submitBtn);
+});
+</script>
+<script src="/public/js/sf-chat-widget.js"></script>
+<div style="background:#0d0d0d;border-top:1px solid #1a1a1a;padding:20px 48px;text-align:center;font-size:0.74rem;color:#555;line-height:1.9">
+  <a href="/legal/legal.html#terms" style="color:#C9A84C;text-decoration:none;margin:0 10px">Terms of Service</a>
+  <a href="/legal/legal.html#privacy" style="color:#C9A84C;text-decoration:none;margin:0 10px">Privacy Policy</a>
+  <a href="/legal/legal.html#refund" style="color:#C9A84C;text-decoration:none;margin:0 10px">Refund Policy</a>
+  <a href="/legal/legal.html#ai-disclaimer" style="color:#C9A84C;text-decoration:none;margin:0 10px">AI Disclaimer</a>
+  <a href="/legal/legal.html#earnings" style="color:#C9A84C;text-decoration:none;margin:0 10px">Earnings Disclaimer</a>
+  <br>© 2026 SystemForge AI LLC · Houston, TX · Payment processing by Stripe (PCI-DSS compliant)
+</div>
+</body>
+</html>
+

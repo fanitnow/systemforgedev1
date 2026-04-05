@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SystemForge AI — Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0A0A0A;--dark:#0f0f0f;--card:#161616;--card2:#1c1c1c;
+  --border:#242424;--border2:#2e2e2e;
+  --gold:#C9A84C;--gold-light:#E8C96A;--gold-dim:rgba(201,168,76,0.1);
+  --white:#F5F0E8;--muted:#666;--muted2:#999;
+  --green:#4CAF78;--green-dim:rgba(76,175,120,0.12);
+  --blue:#5B8DEF;--blue-dim:rgba(91,141,239,0.12);
+  --red:#FF4444;--red-dim:rgba(255,68,68,0.1);
+  --orange:#F0A500;--orange-dim:rgba(240,165,0,0.1);
+  --purple:#9B72F7;--purple-dim:rgba(155,114,247,0.1);
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6}
+
+/* ── WIDGET LAUNCHER ── */
+#sf-launcher{
+  position:fixed;bottom:28px;right:28px;z-index:9998;
+  display:flex;flex-direction:column;align-items:flex-end;gap:10px;
+}
+.launcher-btn{
+  width:60px;height:60px;background:var(--gold);
+  border:none;cursor:pointer;border-radius:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.25s;box-shadow:0 8px 32px rgba(201,168,76,0.35);
+  position:relative;
+}
+.launcher-btn:hover{background:var(--gold-light);transform:translateY(-2px)}
+.launcher-btn svg{transition:all 0.25s}
+.launcher-btn.open svg.chat-icon{opacity:0;transform:scale(0.5)}
+.launcher-btn.open svg.close-icon{opacity:1;transform:scale(1)}
+.launcher-btn svg.close-icon{position:absolute;opacity:0;transform:scale(0.5)}
+.launcher-pulse{
+  position:absolute;top:-3px;right:-3px;
+  width:14px;height:14px;background:var(--green);border-radius:50%;
+  border:2px solid var(--black);
+}
+.launcher-pulse::after{
+  content:'';position:absolute;inset:-3px;
+  border-radius:50%;background:var(--green);
+  animation:pulse-ring 2s infinite;opacity:0.4;
+}
+@keyframes pulse-ring{0%{transform:scale(1);opacity:0.4}100%{transform:scale(1.8);opacity:0}}
+.launcher-bubble{
+  background:var(--card);border:1px solid var(--border);
+  padding:10px 16px;font-size:13px;color:var(--white);
+  max-width:220px;text-align:right;line-height:1.4;
+  animation:bubbleIn 0.4s ease both;
+}
+@keyframes bubbleIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── CHAT WINDOW ── */
+#sf-chat{
+  position:fixed;bottom:104px;right:28px;z-index:9997;
+  width:400px;height:600px;
+  background:var(--dark);border:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+  transform:scale(0.92) translateY(20px);opacity:0;
+  pointer-events:none;
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  transform-origin:bottom right;
+}
+#sf-chat.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+
+/* ── HEADER ── */
+.chat-header{
+  padding:16px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+  background:var(--card);flex-shrink:0;
+}
+.agent-avatar{
+  width:40px;height:40px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:0.75rem;
+  position:relative;
+}
+.agent-status{
+  position:absolute;bottom:-1px;right:-1px;
+  width:10px;height:10px;border-radius:50%;
+  border:2px solid var(--card);background:var(--green);
+}
+.agent-info{flex:1;min-width:0}
+.agent-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;display:flex;align-items:center;gap:8px}
+.agent-badge{font-size:0.6rem;font-weight:700;padding:2px 8px;letter-spacing:0.08em;text-transform:uppercase}
+.agent-role{font-size:0.72rem;color:var(--muted2);margin-top:1px}
+.header-actions{display:flex;gap:4px}
+.header-btn{background:none;border:none;cursor:pointer;padding:6px;color:var(--muted);transition:color 0.2s;display:flex;align-items:center}
+.header-btn:hover{color:var(--white)}
+
+/* ── AGENT SWITCHER ── */
+.agent-switcher{
+  display:flex;gap:1px;padding:8px 12px;
+  background:var(--black);border-bottom:1px solid var(--border);
+  flex-shrink:0;overflow-x:auto;scrollbar-width:none;
+}
+.agent-switcher::-webkit-scrollbar{display:none}
+.agent-pill{
+  display:flex;align-items:center;gap:5px;
+  padding:5px 12px;font-size:0.68rem;font-weight:700;
+  letter-spacing:0.06em;text-transform:uppercase;
+  cursor:pointer;border:1px solid transparent;
+  transition:all 0.2s;white-space:nowrap;flex-shrink:0;
+  background:none;color:var(--muted);
+}
+.agent-pill:hover{color:var(--muted2);background:var(--card)}
+.agent-pill.active{color:var(--white)}
+.agent-pill .pill-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ── MESSAGES ── */
+.chat-messages{
+  flex:1;overflow-y:auto;padding:20px 16px;
+  display:flex;flex-direction:column;gap:12px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border)}
+
+.msg-group{display:flex;flex-direction:column;gap:4px}
+.msg-row{display:flex;align-items:flex-end;gap:8px}
+.msg-row.user{flex-direction:row-reverse}
+
+.msg-avatar-sm{
+  width:28px;height:28px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.6rem;font-weight:800;font-family:'Syne',sans-serif;
+  margin-bottom:2px;
+}
+
+.bubble{
+  max-width:78%;padding:10px 14px;
+  font-size:0.82rem;line-height:1.6;position:relative;
+}
+.bubble.ai{
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-bottom-left-radius:2px;
+}
+.bubble.user{
+  background:var(--gold-dim);
+  border:1px solid rgba(201,168,76,0.2);
+  border-bottom-right-radius:2px;
+  color:var(--white);
+}
+.bubble strong{color:var(--gold)}
+.bubble a{color:var(--gold);text-decoration:underline;cursor:pointer}
+.msg-time{font-size:0.62rem;color:var(--muted);padding:0 4px;margin-bottom:4px}
+.msg-time.right{text-align:right}
+
+/* TYPING */
+.typing-bubble{
+  background:var(--card2);border:1px solid var(--border);
+  padding:12px 16px;width:fit-content;
+  display:flex;align-items:center;gap:4px;
+}
+.typing-dot{width:5px;height:5px;border-radius:50%;background:var(--muted);animation:tdot 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:0.2s}
+.typing-dot:nth-child(3){animation-delay:0.4s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);background:var(--muted)}30%{transform:translateY(-5px);background:var(--gold)}}
+
+/* QUICK REPLIES */
+.quick-replies{
+  display:flex;flex-wrap:wrap;gap:6px;
+  padding:0 16px 12px;flex-shrink:0;
+}
+.qr-btn{
+  background:none;border:1px solid var(--border);
+  color:var(--muted2);font-size:0.72rem;padding:6px 12px;
+  cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif;
+  text-align:left;line-height:1.3;
+}
+.qr-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+
+/* AGENT HANDOFF CARD */
+.handoff-card{
+  margin:4px 0;padding:14px 16px;
+  border-left:3px solid;font-size:0.78rem;
+  line-height:1.5;
+}
+.handoff-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.8rem;margin-bottom:4px}
+
+/* INPUT AREA */
+.chat-input-area{
+  border-top:1px solid var(--border);
+  background:var(--card);flex-shrink:0;
+}
+.input-row{display:flex;align-items:flex-end;gap:8px;padding:12px 14px}
+.chat-input{
+  flex:1;background:var(--black);border:1px solid var(--border);
+  color:var(--white);padding:10px 14px;
+  font-family:'DM Sans',sans-serif;font-size:0.82rem;
+  outline:none;resize:none;min-height:40px;max-height:100px;
+  line-height:1.5;transition:border-color 0.2s;
+}
+.chat-input:focus{border-color:var(--gold)}
+.chat-input::placeholder{color:#444}
+.send-btn{
+  background:var(--gold);color:var(--black);border:none;
+  width:40px;height:40px;display:flex;align-items:center;
+  justify-content:center;cursor:pointer;flex-shrink:0;
+  transition:all 0.2s;
+}
+.send-btn:hover{background:var(--gold-light)}
+.send-btn:disabled{opacity:0.4;cursor:not-allowed}
+.input-footer{
+  padding:0 14px 10px;
+  font-size:0.62rem;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.input-footer span{color:var(--gold)}
+
+/* SATISFACTION SURVEY */
+.survey-card{
+  margin:8px 0;background:var(--card);border:1px solid var(--border);
+  padding:16px;font-size:0.8rem;
+}
+.survey-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;margin-bottom:10px}
+.survey-stars{display:flex;gap:6px;margin-bottom:8px}
+.star-btn{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--border2);transition:color 0.15s;padding:0}
+.star-btn.active{color:var(--gold)}
+
+/* AGENT COLORS */
+.forge-color{color:var(--gold)}
+.forge-bg{background:var(--gold-dim);border-color:rgba(201,168,76,0.3)}
+.scout-color{color:var(--blue)}
+.scout-bg{background:var(--blue-dim);border-color:rgba(91,141,239,0.3)}
+.builder-color{color:var(--green)}
+.builder-bg{background:var(--green-dim);border-color:rgba(76,175,120,0.3)}
+.guard-color{color:var(--red)}
+.guard-bg{background:var(--red-dim);border-color:rgba(255,68,68,0.3)}
+.closer-color{color:var(--purple)}
+.closer-bg{background:var(--purple-dim);border-color:rgba(155,114,247,0.3)}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp 0.3s ease both}
+
+/* MOBILE */
+@media(max-width:480px){
+  #sf-chat{width:calc(100vw - 16px);right:8px;bottom:90px;height:calc(100vh - 110px)}
+  #sf-launcher{right:16px;bottom:16px}
+}
+
+/* NOTIFICATION DOT */
+.notif-dot{
+  position:absolute;top:-4px;right:-4px;
+  background:var(--red);color:#fff;
+  font-size:0.6rem;font-weight:800;font-family:'Syne',sans-serif;
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--black);
+}
+</style>
+</head>
+<body style="background:var(--black);min-height:100vh">
+
+<!-- DEMO BACKDROP -->
+<div style="padding:60px 40px;max-width:600px">
+  <div style="font-family:'Syne',sans-serif;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px">SystemForge AI — Live Chat System</div>
+  <h1 style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:16px">5-Agent AI<br>Communication Layer</h1>
+  <p style="color:var(--muted2);font-size:0.9rem;line-height:1.7;max-width:420px;margin-bottom:32px">Every visitor gets the right agent for their situation. Forge qualifies. Scout audits. Builder onboards. Guard handles support. Closer recovers cold leads.</p>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;gap:12px;align-items:center">
+      <div style="width:8px;height:8px;background:var(--gold);border-radius:50%;flex-shrink:0"></div>
+      <div style="font-size:0.82rem;color:var(--muted2)"><strong style="color:var(--white)">Forge</strong> — Sales qualifier. Every visitor starts here.</div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <div style="width:8px;height:8px;background:var(--blue);border-radius:50%;flex-shrink:0"></div>
+      <div style="font-size:0.82rem;color:var(--muted2)"><strong style="color:var(--white)">Scout</strong> — Audit specialist. Runs the free business diagnosis.</div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <div style="width:8px;height:8px;background:var(--green);border-radius:50%;flex-shrink:0"></div>
+      <div style="font-size:0.82rem;color:var(--muted2)"><strong style="color:var(--white)">Builder</strong> — Onboarding agent. Handles post-purchase clients.</div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <div style="width:8px;height:8px;background:var(--red);border-radius:50%;flex-shrink:0"></div>
+      <div style="font-size:0.82rem;color:var(--muted2)"><strong style="color:var(--white)">Guard</strong> — Support agent. Billing, complaints, refunds.</div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <div style="width:8px;height:8px;background:var(--purple);border-radius:50%;flex-shrink:0"></div>
+      <div style="font-size:0.82rem;color:var(--muted2)"><strong style="color:var(--white)">Closer</strong> — Recovery agent. Warm leads who haven't bought yet.</div>
+    </div>
+  </div>
+  <div style="margin-top:40px;font-size:0.8rem;color:var(--muted);font-style:italic">Click the gold button → to open the live chat</div>
+</div>
+
+<!-- LAUNCHER -->
+<div id="sf-launcher">
+  <div class="launcher-bubble" id="launcherBubble">
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;color:var(--gold);margin-bottom:2px">Built in 48 hours. Running forever.</div>
+    <div style="color:var(--muted2);font-size:0.72rem">Is your business leaking money? Let's find out.</div>
+  </div>
+  <button class="launcher-btn" id="launcherBtn" onclick="toggleChat()">
+    <div class="launcher-pulse"></div>
+    <div class="notif-dot" id="notifDot">1</div>
+    <svg class="chat-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--black)" stroke-width="2" stroke-linecap="square">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <svg class="close-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--black)" stroke-width="2.5" stroke-linecap="square">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+</div>
+
+<!-- CHAT WINDOW -->
+<div id="sf-chat">
+
+  <!-- HEADER -->
+  <div class="chat-header" id="chatHeader">
+    <div class="agent-avatar" id="headerAvatar">
+      <svg width="40" height="40" viewBox="0 0 44 44" fill="none">
+        <rect x="2" y="2" width="40" height="40" stroke="#C9A84C" stroke-width="1.5"/>
+        <path d="M10 32 L10 18 L22 12 L34 18 L34 32" stroke="#C9A84C" stroke-width="2" fill="none"/>
+        <path d="M10 32 L34 32" stroke="#C9A84C" stroke-width="2"/>
+        <rect x="8" y="30" width="28" height="4" fill="#C9A84C"/>
+      </svg>
+      <div class="agent-status"></div>
+    </div>
+    <div class="agent-info">
+      <div class="agent-name" id="agentName">
+        Forge
+        <span class="agent-badge forge-bg forge-color" id="agentBadge" style="border-radius:2px">Sales</span>
+      </div>
+      <div class="agent-role" id="agentRole">SystemForge AI · Online now</div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" onclick="minimizeChat()" title="Minimize">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- AGENT SWITCHER -->
+  <div class="agent-switcher" id="agentSwitcher">
+    <button class="agent-pill active" id="pill-forge" onclick="switchAgent('forge',true)">
+      <span class="pill-dot" style="background:var(--gold)"></span>Forge
+    </button>
+    <button class="agent-pill" id="pill-scout" onclick="switchAgent('scout',true)">
+      <span class="pill-dot" style="background:var(--blue)"></span>Scout
+    </button>
+    <button class="agent-pill" id="pill-builder" onclick="switchAgent('builder',true)">
+      <span class="pill-dot" style="background:var(--green)"></span>Builder
+    </button>
+    <button class="agent-pill" id="pill-guard" onclick="switchAgent('guard',true)">
+      <span class="pill-dot" style="background:var(--red)"></span>Guard
+    </button>
+    <button class="agent-pill" id="pill-closer" onclick="switchAgent('closer',true)">
+      <span class="pill-dot" style="background:var(--purple)"></span>Closer
+    </button>
+  </div>
+
+  <!-- MESSAGES -->
+  <div class="chat-messages" id="chatMessages"></div>
+
+  <!-- QUICK REPLIES -->
+  <div class="quick-replies" id="quickReplies"></div>
+
+  <!-- INPUT -->
+  <div class="chat-input-area">
+    <div class="input-row">
+      <textarea class="chat-input" id="chatInput" placeholder="Type your message..." rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+    <div class="input-footer">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Secured by <span>SystemForge AI</span> · Powered by Claude
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── AGENT DEFINITIONS ─────────────────────────────────────────
+const AGENTS = {
+  forge: {
+    name: 'Forge',
+    role: 'SystemForge AI · Sales Qualifier',
+    badge: 'Sales',
+    badgeClass: 'forge-bg forge-color',
+    color: '#C9A84C',
+    initials: 'FG',
+    bgStyle: 'background:rgba(201,168,76,0.15)',
+    system: `You are Forge, the primary sales qualifier AI for SystemForge AI. You are sharp, direct, warm, and results-focused.
+
+YOUR JOB: Qualify visitors, understand their situation, and route them to the right specialist.
+
+ABOUT SYSTEMFORGE AI:
+- We fix broken business systems in 48 hours
+- Free AI business audit (takes 7 minutes)
+- Tier 1: Audit Report $97 (24hr delivery)
+- Tier 2: System Starter $750 (48-72hr build — lead capture, CRM, follow-up, booking)
+- Tier 3: Full System Build $2,500 (5-7 day complete backend)
+- Target clients: barbershops, salons, trainers, contractors, coaches, real estate agents
+
+ROUTING RULES (mention these in your response using EXACTLY these tags):
+- If they want a free audit → say [ROUTE:scout]
+- If they're an existing client with build questions → say [ROUTE:builder]
+- If they have a complaint, refund request, or billing issue → say [ROUTE:guard]
+- If they showed interest before but didn't buy → say [ROUTE:closer]
+- Otherwise stay as Forge and qualify them
+
+TONE: Conversational, confident, no fluff. Max 3-4 sentences per response. Ask ONE question at a time. Sound like a sharp consultant, not a chatbot.
+
+Start by finding out what type of business they run and what's feeling most chaotic right now.`,
+    greeting: `Hey — I'm Forge, your SystemForge AI assistant.\n\nQuick question before anything else: **what type of business do you run?**\n\nI want to make sure I point you to exactly the right resource — whether that's a free audit, a pricing question, or something else entirely.`,
+    quickReplies: ['I run a barbershop/salon','Personal trainer / gym','Real estate agent','Contractor / trades','Coaching / consulting','Something else']
+  },
+
+  scout: {
+    name: 'Scout',
+    role: 'Audit Specialist · Free Diagnosis',
+    badge: 'Audit',
+    badgeClass: 'scout-bg scout-color',
+    color: '#5B8DEF',
+    initials: 'SC',
+    bgStyle: 'background:rgba(91,141,239,0.15)',
+    system: `You are Scout, the business audit specialist for SystemForge AI. You are analytical, precise, and focused on finding revenue leaks.
+
+YOUR JOB: Run a structured business systems audit through conversation. Ask ONE question at a time. Build a clear picture of their gaps.
+
+AUDIT QUESTIONS (ask in this order, one at a time):
+1. What type of business do you run?
+2. How do you currently get most of your customers?
+3. When someone shows interest, what happens next — how do you capture their info?
+4. Do you follow up with people who don't book immediately?
+5. What does onboarding a new client look like for you?
+6. What parts of your business feel most manual or chaotic right now?
+7. What tools are you currently using? (CRM, booking, email, etc.)
+
+After 5+ answers, generate a MINI AUDIT REPORT:
+- State 3 specific gaps you identified
+- Estimate monthly revenue leak (be specific: "$1,800–$3,200/mo")
+- Recommend which package fixes it (Tier 1 at $97, Tier 2 at $750, or Tier 3 at $2,500)
+- End with: "Want me to build a full written report for you — or are you ready to fix this now?"
+
+ROUTING: If they're ready to buy say [ROUTE:forge]. If they have a complaint say [ROUTE:guard].
+
+TONE: Consultant-style. Direct. Data-focused. Show you understand their specific business. Max 3 sentences per message until the report.`,
+    greeting: `I'm Scout — I specialize in diagnosing business system gaps.\n\nI'll ask you 7 targeted questions and in about 5 minutes I'll show you **exactly where your business is leaking money** and what it's costing you monthly.\n\nLet's start: **What type of business do you run?**`,
+    quickReplies: ['Barbershop / Salon','Personal Training','Real Estate','Contractor / Home Services','Restaurant / Food','Consulting / Coaching']
+  },
+
+  builder: {
+    name: 'Builder',
+    role: 'Client Onboarding · Build Status',
+    badge: 'Client',
+    badgeClass: 'builder-bg builder-color',
+    color: '#4CAF78',
+    initials: 'BD',
+    bgStyle: 'background:rgba(76,175,120,0.15)',
+    system: `You are Builder, the client success and onboarding specialist for SystemForge AI.
+
+YOUR JOB: Support paying clients through their build, answer questions about their order, check on delivery status, and help with system handoff.
+
+WHAT YOU HANDLE:
+- Build progress questions ("When will my system be ready?")
+- Intake clarifications ("Do you need my Instagram login?")
+- Post-delivery support ("How do I use the CRM you set up?")
+- Understanding what was built and how it works
+- Scheduling handoff calls
+
+KEY FACTS:
+- Tier 1 (Audit Report): delivered within 24hrs of intake
+- Tier 2 (System Starter): delivered within 48-72hrs of intake
+- Tier 3 (Full Build): delivered within 5-7 business days of scope call
+- Handoff includes a Loom walkthrough video + 60-min call
+- Day 7 check-in is automatically scheduled
+- For urgent issues: support@systemforgeai.com
+
+ROUTING: For billing/refund issues → [ROUTE:guard]. For new purchases → [ROUTE:forge].
+
+TONE: Warm, reassuring, practical. These clients paid real money — treat them like VIPs. Max 4 sentences. Be specific about timelines.`,
+    greeting: `Hey! I'm Builder — I'm here to support you through your SystemForge build.\n\nI can help with **build status, questions about your intake, post-delivery support**, or getting your handoff call scheduled.\n\nWhat do you need from me today?`,
+    quickReplies: ['When will my build be ready?','I have questions about my intake','How do I use my new CRM?','I need to reschedule my handoff call','I have an issue with my delivery']
+  },
+
+  guard: {
+    name: 'Guard',
+    role: 'Support · Billing · Escalations',
+    badge: 'Support',
+    badgeClass: 'guard-bg guard-color',
+    color: '#FF4444',
+    initials: 'GD',
+    bgStyle: 'background:rgba(255,68,68,0.15)',
+    system: `You are Guard, the support and escalation specialist for SystemForge AI. You are calm, professional, empathetic, and solution-focused.
+
+YOUR JOB: Handle complaints, billing questions, refund requests, and any situation where a client is unhappy or confused.
+
+POLICIES YOU KNOW:
+- Full refund: if we miss our delivery guarantee (24hr for Tier 1, 48-72hr for Tier 2, 5-7 days for Tier 3)
+- Partial refund: possible if significant scope change requested after work began
+- No refund: once a system is delivered and handoff call occurs (unless we failed to deliver as described)
+- Chargebacks: ask them to contact us FIRST before filing with their bank
+- Refund processing: 5-10 business days through Stripe
+- Legal contact: legal@systemforgeai.com
+- Support email: support@systemforgeai.com
+- Response time: 1-2 business days for legal, same day for support
+
+HOW TO HANDLE:
+1. Acknowledge their frustration first — don't jump to policy
+2. Ask what specifically went wrong
+3. Explain what you can do
+4. Offer a concrete next step (refund, re-do, call with owner)
+
+ESCALATION: For anything you can't resolve → "I'm flagging this for the SystemForge owner — you'll hear back within 2 hours at the email you used to purchase."
+
+TONE: Professional, empathetic, solution-first. Never defensive. Never dismissive. Max 4 sentences.`,
+    greeting: `I'm Guard — I handle support, billing questions, and any issues you're experiencing.\n\nI take every concern seriously and I'm here to make it right.\n\n**What's going on?** Tell me exactly what happened and I'll help you resolve it.`,
+    quickReplies: ['I want a refund','My build is late','I have a billing question','Something wasn\'t delivered as described','I want to speak to the owner']
+  },
+
+  closer: {
+    name: 'Closer',
+    role: 'Sales Recovery · Warm Leads',
+    badge: 'Re-Engage',
+    badgeClass: 'closer-bg closer-color',
+    color: '#9B72F7',
+    initials: 'CL',
+    bgStyle: 'background:rgba(155,114,247,0.15)',
+    system: `You are Closer, the sales recovery specialist for SystemForge AI. You are confident, persuasive, direct, and focused on removing the last obstacle between a warm lead and a purchase.
+
+YOUR JOB: Re-engage leads who showed interest but didn't buy. Find out what held them back. Remove that obstacle. Close the sale.
+
+APPROACH:
+1. Acknowledge they've been thinking about it
+2. Ask ONE direct question: "What's the one thing that's making you hesitate?"
+3. Handle their specific objection with facts
+4. Make the decision easy with a clear, concrete offer
+
+COMMON OBJECTIONS AND HOW TO HANDLE THEM:
+- "Too expensive" → "You're currently losing more than this every month. The $750 pays for itself in the first week it's running."
+- "Not sure it'll work for my business" → "Every business we've worked with had the same gaps. The audit already showed yours. The question is whether you want to keep losing $X/mo or fix it."
+- "Need to think about it" → "What specifically? I can answer any question right now."
+- "Not the right time" → "There's no 'right time' — your systems are leaking money every day this isn't fixed."
+- "I'll do it myself" → "You could. But it'll take months, and you'll still need the same tools. We do it in 48 hours."
+
+CLOSING OFFER: If they're hesitant on price → "Start with the $97 Audit Report today. It applies as a full credit toward the $750 build. You lose nothing by starting there."
+
+ROUTING: When they're ready to purchase → [ROUTE:forge]. For support issues → [ROUTE:guard].
+
+TONE: Direct. Confident. No pressure tactics but no backing down either. You believe in what you sell because it works. Max 3 sentences. Ask ONE thing at a time.`,
+    greeting: `Hey — I'm Closer. I know you've been thinking about SystemForge AI.\n\nI'm not here to pitch you. I want to understand what's in the way.\n\n**What's the one thing that made you hesitate?** Be honest — I can probably answer it.`,
+    quickReplies: ['The price is too high','Not sure it works for my type of business','I need to think about it more','The timing isn\'t right','I want to start with the $97 audit']
+  }
+};
+
+// ── STATE ─────────────────────────────────────────────────────
+let currentAgent = 'forge';
+let conversations = {};
+let isOpen = false;
+let isTyping = false;
+let hasGreeted = {};
+
+Object.keys(AGENTS).forEach(a => {
+  conversations[a] = [];
+  hasGreeted[a] = false;
+});
+
+// ── TOGGLE CHAT ───────────────────────────────────────────────
+function toggleChat() {
+  isOpen = !isOpen;
+  document.getElementById('sf-chat').classList.toggle('open', isOpen);
+  document.getElementById('launcherBtn').classList.toggle('open', isOpen);
+  document.getElementById('notifDot').style.display = 'none';
+  if (isOpen) {
+    document.getElementById('launcherBubble').style.display = 'none';
+    if (!hasGreeted[currentAgent]) greetFromAgent(currentAgent);
+    setTimeout(() => document.getElementById('chatInput').focus(), 300);
+  }
+}
+
+function minimizeChat() {
+  isOpen = false;
+  document.getElementById('sf-chat').classList.remove('open');
+  document.getElementById('launcherBtn').classList.remove('open');
+}
+
+// ── SWITCH AGENT ──────────────────────────────────────────────
+function switchAgent(agentKey, fromClick) {
+  const prev = currentAgent;
+  currentAgent = agentKey;
+
+  // Update pills
+  document.querySelectorAll('.agent-pill').forEach(p => p.classList.remove('active'));
+  document.getElementById('pill-' + agentKey).classList.add('active');
+
+  // Update header
+  const agent = AGENTS[agentKey];
+  document.getElementById('agentName').innerHTML = `${agent.name} <span class="agent-badge ${agent.badgeClass}" style="border-radius:2px">${agent.badge}</span>`;
+  document.getElementById('agentRole').textContent = agent.role;
+
+  // Render conversation
+  renderMessages();
+
+  // If switching from user click and not greeted, add handoff card + greet
+  if (fromClick && prev !== agentKey) {
+    if (!hasGreeted[agentKey]) {
+      addHandoffCard(agentKey);
+      greetFromAgent(agentKey);
+    } else {
+      renderMessages();
+    }
+  }
+  scrollBottom();
+}
+
+function addHandoffCard(agentKey) {
+  const agent = AGENTS[agentKey];
+  const colorMap = {
+    forge: 'var(--gold)', scout: 'var(--blue)',
+    builder: 'var(--green)', guard: 'var(--red)', closer: 'var(--purple)'
+  };
+  const card = {
+    type: 'handoff',
+    agentKey,
+    color: colorMap[agentKey],
+    text: `You're now connected with **${agent.name}** — ${agent.role}`
+  };
+  conversations[agentKey].push(card);
+}
+
+// ── GREET ─────────────────────────────────────────────────────
+function greetFromAgent(agentKey) {
+  hasGreeted[agentKey] = true;
+  const agent = AGENTS[agentKey];
+  showTypingIndicator();
+  setTimeout(() => {
+    removeTypingIndicator();
+    conversations[agentKey].push({
+      role: 'assistant',
+      content: agent.greeting,
+      agent: agentKey,
+      ts: timeNow()
+    });
+    renderMessages();
+    showQuickReplies(agent.quickReplies);
+    scrollBottom();
+  }, 1000 + Math.random() * 600);
+}
+
+// ── SEND MESSAGE ──────────────────────────────────────────────
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text || isTyping) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('sendBtn').disabled = true;
+  document.getElementById('quickReplies').innerHTML = '';
+
+  conversations[currentAgent].push({
+    role: 'user',
+    content: text,
+    ts: timeNow()
+  });
+  renderMessages();
+  scrollBottom();
+
+  isTyping = true;
+  showTypingIndicator();
+
+  try {
+    const reply = await callAgent(currentAgent, text);
+    removeTypingIndicator();
+
+    // Check for routing directive
+    const routeMatch = reply.match(/\[ROUTE:(\w+)\]/);
+    let cleanReply = reply.replace(/\[ROUTE:\w+\]/g, '').trim();
+
+    conversations[currentAgent].push({
+      role: 'assistant',
+      content: cleanReply,
+      agent: currentAgent,
+      ts: timeNow()
+    });
+
+    if (routeMatch) {
+      const target = routeMatch[1];
+      if (AGENTS[target]) {
+        setTimeout(() => {
+          switchAgent(target, false);
+          addHandoffCard(target);
+          greetFromAgent(target);
+          updatePillActive(target);
+        }, 1200);
+      }
+    }
+
+    renderMessages();
+    showQuickReplies(getContextualReplies(currentAgent, cleanReply));
+    scrollBottom();
+  } catch(e) {
+    removeTypingIndicator();
+    conversations[currentAgent].push({
+      role: 'assistant',
+      content: 'I hit a snag on my end. Please try again in a moment.',
+      agent: currentAgent,
+      ts: timeNow()
+    });
+    renderMessages();
+    scrollBottom();
+  }
+
+  isTyping = false;
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('chatInput').focus();
+}
+
+function updatePillActive(agentKey) {
+  document.querySelectorAll('.agent-pill').forEach(p => p.classList.remove('active'));
+  document.getElementById('pill-' + agentKey).classList.add('active');
+  currentAgent = agentKey;
+  const agent = AGENTS[agentKey];
+  document.getElementById('agentName').innerHTML = `${agent.name} <span class="agent-badge ${agent.badgeClass}" style="border-radius:2px">${agent.badge}</span>`;
+  document.getElementById('agentRole').textContent = agent.role;
+}
+
+// ── CALL CLAUDE API ───────────────────────────────────────────
+async function callAgent(agentKey, userMessage) {
+  const agent = AGENTS[agentKey];
+  const history = conversations[agentKey]
+    .filter(m => m.role === 'user' || m.role === 'assistant')
+    .map(m => ({ role: m.role, content: m.content }));
+
+  const response = await fetch('/api/claude', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: agent.system,
+      messages: history
+    })
+  });
+
+  const data = await response.json();
+  return data.content?.map(b => b.text || '').join('') || 'Sorry, something went wrong.';
+}
+
+// ── RENDER MESSAGES ───────────────────────────────────────────
+function renderMessages() {
+  const container = document.getElementById('chatMessages');
+  const msgs = conversations[currentAgent];
+  container.innerHTML = '';
+
+  msgs.forEach((msg, i) => {
+    if (msg.type === 'handoff') {
+      const card = document.createElement('div');
+      card.className = 'handoff-card fade-in';
+      card.style.cssText = `border-color:${msg.color};background:${msg.color}15;margin:4px 0`;
+      card.innerHTML = `<div class="handoff-title" style="color:${msg.color}">Agent Handoff</div><div style="color:var(--muted2);font-size:0.78rem">${formatText(msg.text)}</div>`;
+      container.appendChild(card);
+      return;
+    }
+
+    const isUser = msg.role === 'user';
+    const agent = AGENTS[msg.agent || currentAgent];
+
+    const row = document.createElement('div');
+    row.className = `msg-row ${isUser ? 'user' : ''} fade-in`;
+    row.style.animationDelay = `${Math.min(i * 0.02, 0.1)}s`;
+
+    if (!isUser) {
+      const av = document.createElement('div');
+      av.className = 'msg-avatar-sm';
+      av.style.cssText = agent ? agent.bgStyle : '';
+      av.style.color = agent ? agent.color : 'var(--gold)';
+      av.textContent = agent ? agent.initials : 'SF';
+      row.appendChild(av);
+    }
+
+    const bubble = document.createElement('div');
+    bubble.className = `bubble ${isUser ? 'user' : 'ai'} fade-in`;
+    bubble.innerHTML = formatText(msg.content);
+    row.appendChild(bubble);
+
+    // Timestamp
+    const timeRow = document.createElement('div');
+    timeRow.className = `msg-time ${isUser ? 'right' : ''}`;
+    timeRow.style.paddingLeft = isUser ? '0' : '36px';
+    timeRow.textContent = msg.ts || '';
+
+    const group = document.createElement('div');
+    group.className = 'msg-group';
+    group.appendChild(row);
+    group.appendChild(timeRow);
+    container.appendChild(group);
+  });
+}
+
+// ── FORMAT TEXT ───────────────────────────────────────────────
+function formatText(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n\n/g, '</p><p style="margin-top:8px">')
+    .replace(/\n/g, '<br>');
+}
+
+// ── TYPING INDICATOR ──────────────────────────────────────────
+function showTypingIndicator() {
+  const container = document.getElementById('chatMessages');
+  const agent = AGENTS[currentAgent];
+
+  const row = document.createElement('div');
+  row.className = 'msg-row fade-in';
+  row.id = 'typingRow';
+
+  const av = document.createElement('div');
+  av.className = 'msg-avatar-sm';
+  av.style.cssText = agent.bgStyle;
+  av.style.color = agent.color;
+  av.textContent = agent.initials;
+  row.appendChild(av);
+
+  const bubble = document.createElement('div');
+  bubble.className = 'typing-bubble fade-in';
+  bubble.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  row.appendChild(bubble);
+
+  container.appendChild(row);
+  scrollBottom();
+}
+
+function removeTypingIndicator() {
+  const el = document.getElementById('typingRow');
+  if (el) el.remove();
+}
+
+// ── QUICK REPLIES ─────────────────────────────────────────────
+function showQuickReplies(replies) {
+  const container = document.getElementById('quickReplies');
+  container.innerHTML = '';
+  if (!replies || replies.length === 0) return;
+  replies.slice(0, 5).forEach(r => {
+    const btn = document.createElement('button');
+    btn.className = 'qr-btn';
+    btn.textContent = r;
+    btn.onclick = () => {
+      document.getElementById('chatInput').value = r;
+      sendMessage();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function getContextualReplies(agentKey, lastMsg) {
+  const lower = lastMsg.toLowerCase();
+  if (lower.includes('price') || lower.includes('cost') || lower.includes('how much')) {
+    return ['Tell me about the $97 report','What\'s in the $750 package','What does the full build include','Can I start with the audit?'];
+  }
+  if (lower.includes('audit') || lower.includes('free')) {
+    return ['Yes, run my free audit','How does the audit work?','How long does it take?'];
+  }
+  if (lower.includes('refund') || lower.includes('money back')) {
+    return ['I want to request a refund','My build wasn\'t delivered','I want to speak to the owner'];
+  }
+  if (lower.includes('build') || lower.includes('deliver') || lower.includes('ready')) {
+    return ['When will my build be done?','I need to reschedule my call','How do I use my new system?'];
+  }
+  return ['Tell me more','How do I get started?','What does this cost?','I want the free audit'];
+}
+
+// ── UTILITIES ─────────────────────────────────────────────────
+function scrollBottom() {
+  const el = document.getElementById('chatMessages');
+  setTimeout(() => el.scrollTop = el.scrollHeight, 50);
+}
+
+function timeNow() {
+  return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+// Show bubble after 3 seconds
+setTimeout(() => {
+  const bubble = document.getElementById('launcherBubble');
+  bubble.style.display = 'block';
+}, 3000);
+// Hide bubble after 12 seconds
+setTimeout(() => {
+  const bubble = document.getElementById('launcherBubble');
+  if (bubble) bubble.style.display = 'none';
+}, 12000);
+</script>
+</body>
+</html>

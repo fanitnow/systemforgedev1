@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SystemForge AI — Outreach Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0A0A0A;--dark:#0f0f0f;--card:#141414;--card2:#181818;
+  --border:#1e1e1e;--border2:#2a2a2a;
+  --gold:#C9A84C;--gold-light:#E8C96A;--gold-dim:rgba(201,168,76,0.1);
+  --white:#F5F0E8;--muted:#666;--muted2:#999;
+  --green:#4CAF78;--red:#FF4444;--blue:#5B8DEF;--orange:#F0A500;
+}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.35}
+h1,h2,h3,h4,h5{font-family:'Syne',sans-serif}
+
+nav{padding:20px 48px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(10,10,10,0.9);backdrop-filter:blur(12px);z-index:100}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;align-items:center;gap:24px}
+.nav-link{font-size:0.8rem;color:var(--muted2);text-decoration:none;transition:color 0.2s}
+.nav-link:hover{color:var(--white)}
+.nav-cta{background:var(--gold);color:var(--black);font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;padding:8px 18px;text-decoration:none;letter-spacing:0.04em;transition:background 0.2s}
+.nav-cta:hover{background:var(--gold-light)}
+
+/* HERO */
+.playbook-hero{padding:80px 48px 60px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(201,168,76,0.04) 0%,transparent 100%)}
+.hero-eyebrow{font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.playbook-hero h1{font-size:clamp(2.4rem,5vw,4rem);font-weight:800;letter-spacing:-0.03em;line-height:1.0;max-width:700px;margin-bottom:20px}
+.playbook-hero p{font-size:1rem;color:#999;max-width:520px;line-height:1.7;font-weight:300}
+.hero-stats{display:flex;gap:40px;margin-top:48px;flex-wrap:wrap}
+.hs{border-left:2px solid var(--gold);padding-left:16px}
+.hs-num{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--gold)}
+.hs-label{font-size:0.75rem;color:var(--muted2);margin-top:2px}
+
+/* MAIN LAYOUT */
+.playbook-body{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+@media(max-width:900px){.playbook-body{grid-template-columns:1fr}}
+
+/* TOC SIDEBAR */
+.toc{padding:32px 24px;border-right:1px solid var(--border);position:sticky;top:65px;height:calc(100vh - 65px);overflow-y:auto}
+@media(max-width:900px){.toc{display:none}}
+.toc-title{font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+.toc-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;cursor:pointer;border-left:2px solid transparent;padding-left:10px;margin-left:-10px;transition:all 0.2s;text-decoration:none}
+.toc-item:hover{border-left-color:rgba(201,168,76,0.4)}
+.toc-item.active{border-left-color:var(--gold)}
+.toc-num{font-size:0.68rem;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px;flex-shrink:0}
+.toc-label{font-size:0.8rem;color:var(--muted2);line-height:1.3}
+.toc-item.active .toc-label{color:var(--white)}
+.toc-progress{margin-top:32px;padding-top:24px;border-top:1px solid var(--border)}
+.toc-progress-label{font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px}
+.toc-track{height:3px;background:var(--border)}
+.toc-fill{height:100%;background:var(--gold);transition:width 0.3s;width:0%}
+
+/* CONTENT */
+.playbook-content{padding:48px;max-width:860px}
+@media(max-width:768px){.playbook-content{padding:32px 24px}}
+
+/* SECTION */
+.pb-section{margin-bottom:80px;scroll-margin-top:80px}
+.section-tag{font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-tag::before{content:'';display:block;width:24px;height:1px;background:var(--gold)}
+.pb-section h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:16px;line-height:1.1}
+.pb-section>.intro{color:#999;font-size:0.95rem;max-width:580px;line-height:1.7;margin-bottom:36px;font-weight:300}
+
+/* TARGET CARDS */
+.target-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:28px}
+.target-card{background:var(--card);border:1px solid var(--border);padding:24px;transition:border-color 0.2s;cursor:default}
+.target-card:hover{border-color:rgba(201,168,76,0.3)}
+.target-icon{font-size:1.4rem;margin-bottom:12px}
+.target-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:6px}
+.target-reason{font-size:0.78rem;color:#888;line-height:1.5;margin-bottom:12px}
+.target-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:0.65rem;font-weight:600;padding:2px 10px;letter-spacing:0.06em}
+.tag-gold{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(201,168,76,0.2)}
+.tag-green{background:rgba(76,175,120,0.1);color:var(--green);border:1px solid rgba(76,175,120,0.2)}
+.tag-blue{background:rgba(91,141,239,0.1);color:var(--blue);border:1px solid rgba(91,141,239,0.2)}
+
+/* SCRIPT CARDS */
+.script-card{background:var(--card);border:1px solid var(--border);margin-bottom:16px;overflow:hidden}
+.script-header{padding:14px 20px;background:var(--card2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.script-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;display:flex;align-items:center;gap:10px}
+.script-platform{font-size:0.65rem;font-weight:700;padding:2px 8px;background:var(--gold-dim);color:var(--gold);letter-spacing:0.06em}
+.script-toggle{color:var(--muted);font-size:0.75rem;transition:transform 0.2s}
+.script-body{padding:24px;display:none}
+.script-body.open{display:block}
+.script-text{background:var(--dark);border:1px solid var(--border2);padding:20px;font-family:'DM Mono',monospace;font-size:0.82rem;color:#ccc;line-height:1.7;white-space:pre-wrap;position:relative;margin-bottom:12px}
+.copy-btn{position:absolute;top:12px;right:12px;background:var(--border2);border:none;color:var(--muted2);font-family:'DM Sans',sans-serif;font-size:0.7rem;padding:4px 12px;cursor:pointer;transition:all 0.2s}
+.copy-btn:hover{background:var(--gold);color:var(--black)}
+.script-note{font-size:0.78rem;color:#777;line-height:1.5;padding:12px 16px;background:rgba(201,168,76,0.05);border-left:2px solid var(--gold)}
+
+/* 7-DAY TIMELINE */
+.day-timeline{display:flex;flex-direction:column;gap:0}
+.day-item{display:grid;grid-template-columns:100px 1fr;gap:0}
+.day-marker{display:flex;flex-direction:column;align-items:center;position:relative}
+.day-dot{width:40px;height:40px;background:var(--card);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:0.75rem;flex-shrink:0;z-index:1;transition:all 0.3s}
+.day-item.active .day-dot{border-color:var(--gold);background:var(--gold-dim);color:var(--gold)}
+.day-line{width:2px;background:var(--border);flex:1;margin-top:0}
+.day-item:last-child .day-line{display:none}
+.day-content{padding:0 0 40px 24px;padding-top:8px}
+.day-label{font-family:'Syne',sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.day-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:10px}
+.day-tasks{display:flex;flex-direction:column;gap:8px}
+.day-task{display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;color:#bbb;line-height:1.4}
+.day-task-check{width:16px;height:16px;border:1px solid var(--border2);flex-shrink:0;margin-top:2px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;font-size:0.6rem}
+.day-task-check:hover{border-color:var(--gold)}
+.day-task-check.checked{background:var(--gold);border-color:var(--gold);color:var(--black)}
+.day-task.done span{text-decoration:line-through;opacity:0.5}
+.day-target{display:inline-flex;align-items:center;gap:6px;background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);padding:3px 10px;font-size:0.7rem;color:var(--gold);margin-top:8px;font-weight:600}
+
+/* OBJECTION CARDS */
+.objection-list{display:flex;flex-direction:column;gap:12px}
+.objection-card{background:var(--card);border:1px solid var(--border);overflow:hidden}
+.objection-q{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background 0.15s}
+.objection-q:hover{background:rgba(255,255,255,0.02)}
+.objection-q-text{font-family:'Syne',sans-serif;font-weight:600;font-size:0.88rem;display:flex;align-items:center;gap:10px}
+.obj-icon{color:var(--red);font-size:0.8rem}
+.objection-a{padding:0 20px;max-height:0;overflow:hidden;transition:max-height 0.3s,padding 0.3s}
+.objection-a.open{max-height:200px;padding:16px 20px}
+.objection-a-text{font-size:0.85rem;color:#bbb;line-height:1.6;border-left:2px solid var(--green);padding-left:14px;font-style:italic}
+
+/* PRICING CLOSE TABLE */
+.close-table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.close-table th{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:10px 16px;text-align:left;border-bottom:1px solid var(--border);background:var(--card)}
+.close-table td{padding:12px 16px;font-size:0.85rem;border-bottom:1px solid var(--border);vertical-align:top}
+.close-table tr:last-child td{border-bottom:none}
+.close-trigger{color:#ccc;line-height:1.4}
+.close-response{color:#aaa;font-size:0.8rem;line-height:1.5}
+
+/* INFO BOX */
+.info-box{padding:20px 24px;margin:20px 0;font-size:0.85rem;line-height:1.6}
+.info-box.gold{background:var(--gold-dim);border:1px solid rgba(201,168,76,0.2);border-left:3px solid var(--gold)}
+.info-box.green{background:rgba(76,175,120,0.06);border:1px solid rgba(76,175,120,0.15);border-left:3px solid var(--green);color:#bbb}
+.info-box.red{background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.15);border-left:3px solid var(--red);color:#bbb}
+.info-box strong{color:var(--white)}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:8px}
+.checklist-item{display:flex;align-items:flex-start;gap:12px;padding:10px 16px;background:var(--card);border:1px solid var(--border);font-size:0.85rem;color:#bbb;cursor:pointer;transition:all 0.2s}
+.checklist-item:hover{border-color:rgba(201,168,76,0.2)}
+.checklist-item.done{opacity:0.5}
+.checklist-item.done span{text-decoration:line-through}
+.cl-check{width:18px;height:18px;border:1px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;transition:all 0.2s}
+.checklist-item.done .cl-check{background:var(--green);border-color:var(--green);color:white}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" style="display:flex;align-items:center;gap:9px"><svg width="26" height="26" viewBox="0 0 44 44" fill="none" style="flex-shrink:0"><rect x="2" y="2" width="40" height="40" stroke="#C9A84C" stroke-width="1.5"/><path d="M10 32 L10 18 L22 12 L34 18 L34 32" stroke="#C9A84C" stroke-width="2" fill="none"/><path d="M10 32 L34 32" stroke="#C9A84C" stroke-width="2"/><rect x="8" y="30" width="28" height="4" fill="#C9A84C"/></svg>System<span>Forge</span> AI</div>
+  <div class="nav-links">
+    <a href="/" class="nav-link">← Back to Site</a>
+    <a href="dashboard.html" class="nav-link">Dashboard</a>
+    <a href="checkout.html" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<div class="playbook-hero">
+  <div class="hero-eyebrow">Internal Playbook — Not Public</div>
+  <h1>Your First 5 Clients<br>in 7 Days</h1>
+  <p>No ads. No website traffic needed. Just direct outreach using these exact scripts to local businesses that already need what you sell.</p>
+  <div class="hero-stats">
+    <div class="hs"><div class="hs-num">7</div><div class="hs-label">Day timeline</div></div>
+    <div class="hs"><div class="hs-num">$3,500+</div><div class="hs-label">Target first-week revenue</div></div>
+    <div class="hs"><div class="hs-num">5</div><div class="hs-label">Copy-paste scripts included</div></div>
+    <div class="hs"><div class="hs-num">0</div><div class="hs-label">Ad spend required</div></div>
+  </div>
+</div>
+
+<div class="playbook-body">
+
+  <!-- TOC -->
+  <aside class="toc">
+    <div class="toc-title">Contents</div>
+    <a class="toc-item active" href="#targets"><span class="toc-num">01</span><span class="toc-label">Who to Target</span></a>
+    <a class="toc-item" href="#scripts"><span class="toc-num">02</span><span class="toc-label">Outreach Scripts</span></a>
+    <a class="toc-item" href="#sequence"><span class="toc-num">03</span><span class="toc-label">7-Day Sequence</span></a>
+    <a class="toc-item" href="#objections"><span class="toc-num">04</span><span class="toc-label">Handle Objections</span></a>
+    <a class="toc-item" href="#closing"><span class="toc-num">05</span><span class="toc-label">Closing the Deal</span></a>
+    <a class="toc-item" href="#setup"><span class="toc-num">06</span><span class="toc-label">Before You Launch</span></a>
+    <div class="toc-progress">
+      <div class="toc-progress-label">Your Progress</div>
+      <div class="toc-track"><div class="toc-fill" id="progressFill"></div></div>
+      <div style="font-size:0.7rem;color:var(--muted);margin-top:6px"><span id="progressPct">0</span>% complete</div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="playbook-content">
+
+    <!-- 01 TARGETS -->
+    <section class="pb-section" id="targets">
+      <div class="section-tag">Section 01</div>
+      <h2>Who to target first</h2>
+      <p class="intro">Don't go wide. Go deep on specific verticals that have obvious, painful system gaps and money to pay for a fix. These six categories close the fastest.</p>
+
+      <div class="target-grid">
+        <div class="target-card">
+          <div class="target-icon">✂️</div>
+          <div class="target-name">Barbershops & Salons</div>
+          <div class="target-reason">Booking chaos, zero follow-up, DM dependency. Every one of them loses 10+ clients a month to no-shows and forgotten appointments.</div>
+          <div class="target-tags"><span class="tag tag-gold">FASTEST CLOSE</span><span class="tag tag-green">$750 avg</span></div>
+        </div>
+        <div class="target-card">
+          <div class="target-icon">🏋️</div>
+          <div class="target-name">Personal Trainers</div>
+          <div class="target-reason">Trial clients disappear. No onboarding, no retention, no follow-up system. They know they're losing money and feel it daily.</div>
+          <div class="target-tags"><span class="tag tag-gold">EASIEST PITCH</span><span class="tag tag-green">$750 avg</span></div>
+        </div>
+        <div class="target-card">
+          <div class="target-icon">🔧</div>
+          <div class="target-name">Contractors & Trades</div>
+          <div class="target-reason">Quote requests go nowhere. Zero follow-up system. Referrals not tracked. Highest potential revenue per client.</div>
+          <div class="target-tags"><span class="tag tag-blue">HIGH TICKET</span><span class="tag tag-green">$1,500+ avg</span></div>
+        </div>
+        <div class="target-card">
+          <div class="target-icon">🏡</div>
+          <div class="target-name">Real Estate Agents</div>
+          <div class="target-reason">Lead follow-up is their entire business and most of them do it manually. ROI on a $750 system is obvious in week one.</div>
+          <div class="target-tags"><span class="tag tag-blue">HIGH VALUE</span><span class="tag tag-gold">ROI STORY</span></div>
+        </div>
+        <div class="target-card">
+          <div class="target-icon">💆</div>
+          <div class="target-name">Wellness & Med Spas</div>
+          <div class="target-reason">High average ticket, repeat business potential, terrible follow-up systems. Retention automation pays for itself in one rebooking.</div>
+          <div class="target-tags"><span class="tag tag-green">REPEAT BIZ</span><span class="tag tag-gold">UPSELL EASY</span></div>
+        </div>
+        <div class="target-card">
+          <div class="target-icon">🎯</div>
+          <div class="target-name">Coaches & Consultants</div>
+          <div class="target-reason">Solo operators drowning in admin. They understand ROI language. Fastest path to a full build conversation.</div>
+          <div class="target-tags"><span class="tag tag-blue">FULL BUILD</span><span class="tag tag-gold">HIGH INTENT</span></div>
+        </div>
+      </div>
+
+      <div class="info-box gold">
+        <strong>Pro tip on finding them:</strong> Instagram local hashtags (#HoustonBarber, #MiamiFitness), Google Maps (search "barber near me" → look for 3-4 star reviews mentioning "hard to book"), Facebook Groups for local business owners.
+      </div>
+    </section>
+
+    <!-- 02 SCRIPTS -->
+    <section class="pb-section" id="scripts">
+      <div class="section-tag">Section 02</div>
+      <h2>Outreach scripts</h2>
+      <p class="intro">Use these word-for-word. Do not improvise until you've sent each one at least 10 times. The language is designed to get a response, not to impress.</p>
+
+      <div class="script-card">
+        <div class="script-header" onclick="toggleScript(this)">
+          <div class="script-title"><span class="script-platform">INSTAGRAM DM</span> Cold Opener — Works on Any Business</div>
+          <div class="script-toggle">▼</div>
+        </div>
+        <div class="script-body open">
+          <div class="script-text">Quick question — do you have anything set up to automatically follow up with people who reach out but don't book?
+
+I help [barbershops / trainers / businesses like yours] find and fix the spots where they're losing customers. Takes about 7 minutes to run through and I can show you exactly where the gaps are.
+
+Would it be okay if I sent you a quick audit? No pitch, just the info.<div class="copy-btn" onclick="copyScript(this)">Copy</div></div>
+          <div class="script-note">Send this cold. Don't introduce yourself yet. Don't explain what you do. Just ask the one question that makes them think. If they respond, you have them.</div>
+        </div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-header" onclick="toggleScript(this)">
+          <div class="script-title"><span class="script-platform">INSTAGRAM DM</span> Follow-Up After No Response (Day 3)</div>
+          <div class="script-toggle">▼</div>
+        </div>
+        <div class="script-body">
+          <div class="script-text">Hey [Name] — not trying to be annoying, just wanted to drop this here.
+
+I ran a quick look at businesses in your space and most of them are losing between $2K–$5K a month from the same 3 things:
+- No automated follow-up
+- Booking friction
+- No system to bring past clients back
+
+If any of those hit close to home, I can show you exactly what's happening in your business specifically. Free, no strings.
+
+Just reply "yes" if you want me to take a look.<div class="copy-btn" onclick="copyScript(this)">Copy</div></div>
+          <div class="script-note">The specific dollar number creates urgency. The "just reply yes" makes response frictionless. Only send this once — if no response after this, move on.</div>
+        </div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-header" onclick="toggleScript(this)">
+          <div class="script-title"><span class="script-platform">IN PERSON / TEXT</span> Local Business Walk-In Approach</div>
+          <div class="script-toggle">▼</div>
+        </div>
+        <div class="script-body">
+          <div class="script-text">Hey — I work with businesses on their backend systems. Quick question: when someone calls or DMs you and doesn't book, what happens after that?
+
+[Let them answer]
+
+That's actually the most common place businesses lose money — there's no system to follow up automatically. I built a tool that audits exactly where that's happening and what it costs. Takes 7 minutes. Want me to run it on your business right now?<div class="copy-btn" onclick="copyScript(this)">Copy</div></div>
+          <div class="script-note">Walk-ins are your fastest path to money. Barbershops, salons, auto shops, gyms. Show up during a slow period. Ask the question. Let them talk. The audit is your close tool.</div>
+        </div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-header" onclick="toggleScript(this)">
+          <div class="script-title"><span class="script-platform">EMAIL</span> Cold Email to Small Business Owner</div>
+          <div class="script-toggle">▼</div>
+        </div>
+        <div class="script-body">
+          <div class="script-text">Subject: Quick question about [Business Name]
+
+Hi [Name],
+
+I came across [Business Name] and had a quick question: is there currently a system in place to automatically follow up with customers who reach out but don't book?
+
+I run SystemForge AI — we help small businesses find and plug revenue leaks in their operations. Most businesses we work with are losing $2,000–$6,000 a month from 3–4 fixable gaps in their systems.
+
+I can run a quick audit (7 minutes) and show you exactly what's happening in your business — no pitch, just the findings.
+
+Worth a look?
+
+— [Your Name]
+SystemForge AI<div class="copy-btn" onclick="copyScript(this)">Copy</div></div>
+          <div class="script-note">Short subject, one clear question, no buzzwords. The goal is a "yes" reply, not to close in the email. Reply rate improves significantly when you personalize the business name.</div>
+        </div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-header" onclick="toggleScript(this)">
+          <div class="script-title"><span class="script-platform">AFTER AUDIT</span> Script to Close the $750 Package</div>
+          <div class="script-toggle">▼</div>
+        </div>
+        <div class="script-body">
+          <div class="script-text">"Based on what you showed me, you've got three main gaps: no lead capture, no automated follow-up, and your booking flow is losing people before they commit.
+
+Conservative estimate — that's probably $2,500–$4,000 a month walking out the door.
+
+I can fix all three of those this week. Lead capture, 5-touch follow-up sequence, and a proper booking flow — all set up and working. It's $750, one time, and I'll have it running within 48 hours.
+
+Want to do it?"<div class="copy-btn" onclick="copyScript(this)">Copy</div></div>
+          <div class="script-note">Say the number out loud. Don't flinch. Don't apologize for the price. After you say "Want to do it?" — stop talking. The first person who speaks loses. Let the silence work.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 SEQUENCE -->
+    <section class="pb-section" id="sequence">
+      <div class="section-tag">Section 03</div>
+      <h2>7-Day launch sequence</h2>
+      <p class="intro">Day by day. Follow this exactly. Don't skip ahead. The goal is $3,500+ in paid work by Day 7.</p>
+
+      <div class="day-timeline">
+
+        <div class="day-item active">
+          <div class="day-marker"><div class="day-dot">D1</div><div class="day-line"></div></div>
+          <div class="day-content">
+            <div class="day-label">Day 1 — Monday</div>
+            <div class="day-title">Setup & First 10 Targets</div>
+            <div class="day-tasks">
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Make sure your checkout page (checkout.html) is live and working</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Set up a Stripe account — takes 20 minutes, free to create</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Create a simple Gmail alias: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0d64636b624d7e747e7968606b627f6a686c64236e6260">[email&#160;protected]</a> (or use your personal email for now)</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Find 10 local businesses on Instagram (barbershops, trainers, salons)</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Send the cold opener DM to all 10 — today</span></div>
+            </div>
+            <div class="day-target">🎯 Goal: 10 DMs sent, Stripe live</div>
+          </div>
+        </div>
+
+        <div class="day-item">
+          <div class="day-marker"><div class="day-dot">D2</div><div class="day-line"></div></div>
+          <div class="day-content">
+            <div class="day-label">Day 2 — Tuesday</div>
+            <div class="day-title">First Responses + Walk-Ins</div>
+            <div class="day-tasks">
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Reply to any DM responses — offer to run the audit live on a call or in person</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Walk into 2–3 local businesses. Use the in-person script.</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Send 10 more DMs — new targets</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>If anyone agrees to an audit — run it. Use the AI audit tool at systemforge.html</span></div>
+            </div>
+            <div class="day-target">🎯 Goal: 1 audit completed, 20 total DMs sent</div>
+          </div>
+        </div>
+
+        <div class="day-item">
+          <div class="day-marker"><div class="day-dot">D3</div><div class="day-line"></div></div>
+          <div class="day-content">
+            <div class="day-label">Day 3 — Wednesday</div>
+            <div class="day-title">Follow-Up + First Close Attempt</div>
+            <div class="day-tasks">
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Send the Day 3 follow-up DM to everyone who didn't respond from Day 1</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>For anyone who completed an audit — deliver the findings and present the $750 offer</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Walk into 2 more businesses</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Send checkout.html link to anyone ready to move forward</span></div>
+            </div>
+            <div class="day-target">🎯 Goal: First $750 paid</div>
+          </div>
+        </div>
+
+        <div class="day-item">
+          <div class="day-marker"><div class="day-dot">D4</div><div class="day-line"></div></div>
+          <div class="day-content">
+            <div class="day-label">Day 4 — Thursday</div>
+            <div class="day-title">Build Client #1 + More Outreach</div>
+            <div class="day-tasks">
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Begin building systems for your first paid client (lead capture, follow-up, CRM)</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Send 10 more DMs — keep the pipeline full while you're building</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Run 1–2 more audits for interested leads</span></div>
+            </div>
+            <div class="day-target">🎯 Goal: 2 audits completed, 1 build in progress</div>
+          </div>
+        </div>
+
+        <div class="day-item">
+          <div class="day-marker"><div class="day-dot">D5</div><div class="day-line"></div></div>
+          <div class="day-content">
+            <div class="day-label">Day 5 — Friday</div>
+            <div class="day-title">Second Close + Deliver Client #1</div>
+            <div class="day-tasks">
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Deliver Client #1's systems — Loom video walkthrough + handoff</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Close Client #2 from your pipeline — pitch the $750 package</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Ask Client #1 for a referral: "Do you know anyone else who runs a business like yours?"</span></div>
+            </div>
+            <div class="day-target">🎯 Goal: Client #1 delivered, Client #2 paid</div>
+          </div>
+        </div>
+
+        <div class="day-item">
+          <div class="day-marker"><div class="day-dot">D6</div><div class="day-line"></div></div>
+          <div class="day-content">
+            <div class="day-label">Day 6 — Saturday</div>
+            <div class="day-title">Upsell + Referral Push</div>
+            <div class="day-tasks">
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Begin building Client #2's systems</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Follow up with any warm leads from the week — last chance to close before Monday reset</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Post on your personal IG: "Just helped [industry] businesses fix [problem] this week. Running a few more audits this weekend — free."</span></div>
+            </div>
+            <div class="day-target">🎯 Goal: 3 clients total, referrals coming in</div>
+          </div>
+        </div>
+
+        <div class="day-item">
+          <div class="day-marker"><div class="day-dot">D7</div><div class="day-line"></div></div>
+          <div class="day-content">
+            <div class="day-label">Day 7 — Sunday</div>
+            <div class="day-title">Review + Plan Week 2</div>
+            <div class="day-tasks">
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Count revenue collected. Should be $1,500–$3,500 minimum</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Review dashboard — which industries converted fastest?</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Build your Week 2 outreach list — 50 new targets, doubled down on what worked</span></div>
+              <div class="day-task"><div class="day-task-check" onclick="toggleCheck(this)"></div><span>Consider hiring a VA for $15/hr to handle builds once you're at 3+ clients/week</span></div>
+            </div>
+            <div class="day-target">🎯 Goal: $3,500+ collected, 50 new targets identified</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 04 OBJECTIONS -->
+    <section class="pb-section" id="objections">
+      <div class="section-tag">Section 04</div>
+      <h2>Handle every objection</h2>
+      <p class="intro">Every objection is a request for more information. Know these cold. Practice them out loud before your first call.</p>
+
+      <div class="objection-list">
+        <div class="objection-card">
+          <div class="objection-q" onclick="toggleObj(this)">
+            <div class="objection-q-text"><span class="obj-icon">✗</span>"I don't have the budget right now."</div>
+            <span style="color:var(--muted);font-size:0.75rem">▼</span>
+          </div>
+          <div class="objection-a">
+            <div class="objection-a-text">"I hear you — that's actually exactly why I'm here. Based on what you've described, you're losing roughly $2,000–$3,000 a month right now from leads that never got followed up. The fix costs $750 one time. You'll make that back in the first week it's running. The question is whether you can afford to keep losing what you're losing."</div>
+          </div>
+        </div>
+        <div class="objection-card">
+          <div class="objection-q" onclick="toggleObj(this)">
+            <div class="objection-q-text"><span class="obj-icon">✗</span>"I need to think about it."</div>
+            <span style="color:var(--muted);font-size:0.75rem">▼</span>
+          </div>
+          <div class="objection-a">
+            <div class="objection-a-text">"Of course — what specifically do you need to think through? I want to make sure you have everything to make the decision. Is it the price, the timing, or whether this will actually work for your specific situation?"</div>
+          </div>
+        </div>
+        <div class="objection-card">
+          <div class="objection-q" onclick="toggleObj(this)">
+            <div class="objection-q-text"><span class="obj-icon">✗</span>"I already have [Calendly / Square / Instagram]."</div>
+            <span style="color:var(--muted);font-size:0.75rem">▼</span>
+          </div>
+          <div class="objection-a">
+            <div class="objection-a-text">"Good — those are tools. What I'm building is the system that connects them and makes them work together automatically. Calendly sends a booking confirmation. We build the follow-up sequence that goes out before and after. Most businesses have the tools — they just don't have them wired together."</div>
+          </div>
+        </div>
+        <div class="objection-card">
+          <div class="objection-q" onclick="toggleObj(this)">
+            <div class="objection-q-text"><span class="obj-icon">✗</span>"I don't know if this will work for my business."</div>
+            <span style="color:var(--muted);font-size:0.75rem">▼</span>
+          </div>
+          <div class="objection-a">
+            <div class="objection-a-text">"That's fair — which part are you unsure about? The audit I ran showed you're missing [X and Y]. Both of those are the same gaps in every business I've worked with. They're not unique to you — and neither are the fixes. That's why I can build them in 48 hours."</div>
+          </div>
+        </div>
+        <div class="objection-card">
+          <div class="objection-q" onclick="toggleObj(this)">
+            <div class="objection-q-text"><span class="obj-icon">✗</span>"Can you do it cheaper?"</div>
+            <span style="color:var(--muted);font-size:0.75rem">▼</span>
+          </div>
+          <div class="objection-a">
+            <div class="objection-a-text">"I can't discount the build, but here's what I can do — start with the $97 Audit Report today. You get the full diagnosis and roadmap. If you move forward with the $750 build within 7 days, I'll apply the $97 as a credit. So you'd only pay $653 for the full system."</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 CLOSING -->
+    <section class="pb-section" id="closing">
+      <div class="section-tag">Section 05</div>
+      <h2>Closing the deal</h2>
+      <p class="intro">The audit does most of the work. By the time you present findings, they already know something is broken. Your job is to make the decision easy.</p>
+
+      <table class="close-table">
+        <thead><tr><th>Situation</th><th>What to say</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="close-trigger">They're nodding along to audit findings</td>
+            <td class="close-response">"I can fix all of this. I'll have it running within 48 hours. The System Starter is $750 — want to move forward today?"</td>
+          </tr>
+          <tr>
+            <td class="close-trigger">They ask "How long does it take?"</td>
+            <td class="close-response">"48 hours from when you complete intake. Most clients have everything live before the weekend."</td>
+          </tr>
+          <tr>
+            <td class="close-trigger">They're a larger business or want everything</td>
+            <td class="close-response">"Given the size of what you're running, the Full Build makes more sense — that's $2,500 and we build everything end to end in about a week. Want me to scope it out?"</td>
+          </tr>
+          <tr>
+            <td class="close-trigger">They're hesitant but interested</td>
+            <td class="close-response">"Let's start with the $97 Audit Report. No commitment, just clarity. If you love it, we'll move forward."</td>
+          </tr>
+          <tr>
+            <td class="close-trigger">They want to know the guarantee</td>
+            <td class="close-response">"If I don't deliver within the timeframe, full refund. No questions. And I'll give you a 7-day check-in call to make sure everything's working."</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box red">
+        <strong>Never say these things:</strong> "It's a great deal," "You won't regret it," "Trust me," or "I'll give you a discount." These kill confidence. Say the price once, clearly, then stop talking.
+      </div>
+    </section>
+
+    <!-- 06 BEFORE YOU LAUNCH -->
+    <section class="pb-section" id="setup">
+      <div class="section-tag">Section 06</div>
+      <h2>Before you send a single DM</h2>
+      <p class="intro">Make sure these are done. Sending outreach before your infrastructure is ready is the fastest way to kill a sale you almost had.</p>
+
+      <div class="checklist" id="launchChecklist">
+        <div class="checklist-item" onclick="toggleCL(this)"><div class="cl-check"></div><span>Stripe account created and bank account connected</span></div>
+        <div class="checklist-item" onclick="toggleCL(this)"><div class="cl-check"></div><span>checkout.html is accessible and working (test a purchase yourself)</span></div>
+        <div class="checklist-item" onclick="toggleCL(this)"><div class="cl-check"></div><span>systemforge.html AI audit tool is live and tested</span></div>
+        <div class="checklist-item" onclick="toggleCL(this)"><div class="cl-check"></div><span>Dashboard (dashboard.html) bookmarked so you can track leads</span></div>
+        <div class="checklist-item" onclick="toggleCL(this)"><div class="cl-check"></div><span>You've run a test audit yourself end to end</span></div>
+        <div class="checklist-item" onclick="toggleCL(this)"><div class="cl-check"></div><span>You know which tools you'll use to build systems (GoHighLevel, Zapier, or Make.com)</span></div>
+        <div class="checklist-item" onclick="toggleCL(this)"><div class="cl-check"></div><span>Business email set up (<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b4dddad2dbf4c7cdc7c0d1d9d2dbc6d3d1d5dd9ad7dbd9">[email&#160;protected]</a>)</span></div>
+        <div class="checklist-item" onclick="toggleCL(this)"><div class="cl-check"></div><span>You've practiced the closing script out loud at least 3 times</span></div>
+        <div class="checklist-item" onclick="toggleCL(this)"><div class="cl-check"></div><span>First 10 target businesses identified with Instagram handles or addresses</span></div>
+      </div>
+
+      <div class="info-box green" style="margin-top:24px">
+        <strong>Recommended build tools:</strong> Use <strong>GoHighLevel</strong> ($97/mo) as your primary platform — it handles CRM, lead capture, follow-up sequences, booking, and funnels. One tool, everything you need to deliver Tier 2 and Tier 3 packages. Alternative: <strong>Zapier + Notion + Calendly</strong> (more manual but lower upfront cost).
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function toggleScript(header){
+  const body=header.nextElementSibling;
+  const arrow=header.querySelector('.script-toggle');
+  body.classList.toggle('open');
+  arrow.textContent=body.classList.contains('open')?'▲':'▼';
+}
+
+function toggleObj(header){
+  const ans=header.nextElementSibling;
+  ans.classList.toggle('open');
+  header.querySelector('span:last-child').textContent=ans.classList.contains('open')?'▲':'▼';
+}
+
+function copyScript(btn){
+  const text=btn.parentElement.textContent.replace('Copy','').trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='Copied!';
+    btn.style.background='var(--green)';
+    btn.style.color='var(--black)';
+    setTimeout(()=>{btn.textContent='Copy';btn.style.background='';btn.style.color='';},2000);
+  });
+}
+
+function toggleCheck(el){
+  el.classList.toggle('checked');
+  if(el.classList.contains('checked'))el.textContent='✓';
+  else el.textContent='';
+  el.closest('.day-task').classList.toggle('done',el.classList.contains('checked'));
+  updateProgress();
+}
+
+function toggleCL(item){
+  item.classList.toggle('done');
+  item.querySelector('.cl-check').textContent=item.classList.contains('done')?'✓':'';
+  updateProgress();
+}
+
+function updateProgress(){
+  const total=document.querySelectorAll('.day-task-check,.cl-check').length;
+  const done=document.querySelectorAll('.day-task-check.checked,.checklist-item.done .cl-check').length;
+  const pct=Math.round((done/total)*100);
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressPct').textContent=pct;
+}
+
+// Scroll spy
+const sections=document.qu
