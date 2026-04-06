@@ -35,7 +35,7 @@ SystemForge AI is a complete revenue-generating platform built for a solo operat
 ## Platform Architecture
 
 ```
-User visits systemforgeai.com
+User visits systemsforgeai.com
         ↓
     Free AI Audit (Claude API)
         ↓

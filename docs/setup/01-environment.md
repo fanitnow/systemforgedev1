@@ -15,7 +15,7 @@ Before you begin, make sure you have:
 ## Step 1 — Buy Your Domain
 
 1. Go to [namecheap.com](https://namecheap.com)
-2. Search: `systemforgeai.com`
+2. Search: `systemsforgeai.com`
 3. Add to cart → checkout (~$14/year)
 4. Enable **WhoisGuard** (free — hides your personal info)
 5. Complete purchase

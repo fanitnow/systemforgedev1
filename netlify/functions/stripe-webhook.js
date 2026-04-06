@@ -54,7 +54,7 @@ exports.handler = async function(event, context) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: `SystemForge AI <info@systemforgeai.com>`,
+        from: `SystemForge AI <info@systemsforgeai.com>`,
         to: process.env.OWNER_EMAIL,
         subject,
         html
@@ -96,7 +96,7 @@ exports.handler = async function(event, context) {
             <p><strong>Email:</strong> ${pi.receipt_email || 'Not provided'}</p>
             <p><strong>Stripe ID:</strong> ${pi.id}</p>
             <hr>
-            <p><a href="https://systemforgeai.com/pages/dashboard.html">View Dashboard →</a></p>
+            <p><a href="https://systemsforgeai.com/pages/dashboard.html">View Dashboard →</a></p>
           `
         );
         break;

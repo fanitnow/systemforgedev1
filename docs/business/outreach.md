@@ -25,7 +25,7 @@ Let them answer. Then:
 
 ### Method 3 — Free Audit Upsell
 
-1. Offer free audit at systemforgeai.com
+1. Offer free audit at systemsforgeai.com
 2. Show them their report
 3. Say: "I can fix all of this for you this week for $750."
 

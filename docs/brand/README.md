@@ -5,7 +5,7 @@
 **Name:** SystemForge AI  
 **Tagline:** Built in 48 hours. Running forever.  
 **Logo Concept:** Forge Mark — architectural rooftop/anvil shape inside a square border  
-**Domain:** systemforgeai.com
+**Domain:** systemsforgeai.com
 
 ---
 

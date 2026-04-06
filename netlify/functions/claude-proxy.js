@@ -7,8 +7,8 @@ exports.handler = async function(event, context) {
 
   // CORS headers — allow requests from your domain only
   const allowedOrigins = [
-    'https://systemforgeai.com',
-    'https://www.systemforgeai.com',
+    'https://systemsforgeai.com',
+    'https://www.systemsforgeai.com',
     'http://localhost:3000',       // for local testing
     'http://127.0.0.1:5500'        // for VS Code Live Server
   ];

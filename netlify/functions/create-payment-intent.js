@@ -6,8 +6,8 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 exports.handler = async function(event, context) {
   const allowedOrigins = [
-    'https://systemforgeai.com',
-    'https://www.systemforgeai.com',
+    'https://systemsforgeai.com',
+    'https://www.systemsforgeai.com',
     'http://localhost:3000',
     'http://127.0.0.1:5500'
   ];

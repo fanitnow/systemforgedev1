@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://systemforgeai.com/sitemap.xml
+Sitemap: https://systemsforgeai.com/sitemap.xml

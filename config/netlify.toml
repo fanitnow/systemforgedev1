@@ -4,6 +4,12 @@
   command = "npm install"
 
 [[redirects]]
+  from = "https://www.systemsforgeai.com/*"
+  to = "https://systemsforgeai.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/"
   to = "/public/index.html"
   status = 200

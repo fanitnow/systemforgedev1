@@ -15,7 +15,7 @@
 
 1. In Netlify → Site Settings → Domain management
 2. Click **Add custom domain**
-3. Enter: `systemforgeai.com`
+3. Enter: `systemsforgeai.com`
 4. Copy the 2 nameserver addresses Netlify gives you
 5. Go to Namecheap → Domain List → Manage → Nameservers
 6. Switch to **Custom DNS** and paste both nameserver addresses
@@ -35,7 +35,7 @@
 
 Visit your site and confirm:
 
-- [ ] `systemforgeai.com` loads the main page
+- [ ] `systemsforgeai.com` loads the main page
 - [ ] The forge mark logo appears in the navigation
 - [ ] The AI audit tool responds to messages
 - [ ] The checkout page loads at `/pages/checkout.html`
