@@ -460,8 +460,8 @@
 // ═══════════════════════════════════════════════════════════════
 
 window._sfPipeline = (function() {
-  const URL  = 'YOUR_SUPABASE_URL';
-  const KEY  = 'YOUR_SUPABASE_ANON_KEY';
+  const URL  = 'https://kfbiadghwpxdwrvgjdqc.supabase.co';
+  const KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtmYmlhZGdod3B4ZHdydmdqZHFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MjI1NDQsImV4cCI6MjA5MDk5ODU0NH0.j7WK2c29nGLGbYZuAenJ8jLbohW1P1C8FfaWyve-DpQ';
   const SID  = 'sf_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
   let   LID  = null; // lead_id assigned after first lead insert
   let   CSID = null; // chat_session row ID
