@@ -66,6 +66,28 @@ CREATE TABLE page_events (
 );
 
 
+-- ═══ BLOCK 1b: HOMEPAGE AUDIT LEADS ══════════════════════════
+CREATE TABLE audit_leads (
+  id                  UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at          TIMESTAMPTZ DEFAULT now(),
+  session_id          TEXT,
+  business_type       TEXT,
+  leak_amount         TEXT,
+  missing_systems     TEXT[],
+  recommended_fixes   TEXT[],
+  messages            JSONB DEFAULT '[]',
+  report_shown        BOOLEAN DEFAULT false,
+  cta_clicked         BOOLEAN DEFAULT false,
+  converted           BOOLEAN DEFAULT false,
+  email               TEXT,
+  name                TEXT,
+  phone               TEXT,
+  source_page         TEXT DEFAULT 'homepage'
+);
+ALTER TABLE audit_leads ENABLE ROW LEVEL SECURITY;
+CREATE INDEX idx_audit_leads_session ON audit_leads(session_id);
+CREATE INDEX idx_audit_leads_converted ON audit_leads(converted);
+
 -- ═══ BLOCK 2: FORGE + SCOUT AGENT TABLES ══════════════════════
 
 -- Full conversation log for every Forge (sales qualifier) session
